@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class RebarRequirement extends Model
+{
+    /** @use HasFactory<\Database\Factories\RebarRequirementFactory> */
+    protected $guarded = ['id'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->tracking_id)) {
+                $service = app(\App\Services\RebarService::class);
+                $model->tracking_id = $service->generateRequirementId();
+            }
+            // Auto-calculate total length if needed (though frontend should send it, backend should ensure it)
+            if ($model->required_length && $model->quantity) {
+                $model->total_length = ($model->required_length * $model->quantity);
+            }
+            if (empty($model->user_id) && auth()->check()) {
+                $model->user_id = auth()->id();
+            }
+        });
+    }
+
+    public function cuttingLogs()
+    {
+        return $this->hasMany(RebarCuttingLog::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function site()
+    {
+        return $this->belongsTo(ProjectSite::class, 'site_id');
+    }
+}
+
