@@ -1,2 +1,8 @@
 *
 !.gitignore
+debug*
+.cursor/
+.gemini/
+vite.config.js.timestamp*
+.gemini/
+.cursor/
