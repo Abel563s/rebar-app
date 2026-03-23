@@ -20,11 +20,21 @@ class RebarRequirement extends Model
                 $model->tracking_id = $service->generateRequirementId();
             }
             // Auto-calculate total length if needed (though frontend should send it, backend should ensure it)
-            if ($model->required_length && $model->quantity) {
+            if ($model->required_length && $model->quantity && $model->bar_diameter) {
+                $service = app(\App\Services\RebarService::class);
                 $model->total_length = ($model->required_length * $model->quantity);
+                $model->weight_kg = $service->calculateWeight($model->bar_diameter, $model->required_length, $model->quantity);
             }
             if (empty($model->user_id) && auth()->check()) {
                 $model->user_id = auth()->id();
+            }
+        });
+
+        static::updating(function ($model) {
+            if ($model->required_length && $model->quantity && $model->bar_diameter) {
+                $service = app(\App\Services\RebarService::class);
+                $model->total_length = ($model->required_length * $model->quantity);
+                $model->weight_kg = $service->calculateWeight($model->bar_diameter, $model->required_length, $model->quantity);
             }
         });
     }

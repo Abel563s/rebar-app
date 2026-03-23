@@ -11,7 +11,7 @@ class UpdateRebarCuttingLogRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,19 @@ class UpdateRebarCuttingLogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'rebar_requirement_id' => 'required|exists:rebar_requirements,id',
+            'quantity_cut' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
+            'date' => 'required|date',
+            'bar_diameter' => 'required|integer|min:1',
+            'steel_grade' => 'nullable|string|in:300,400,500,600',
+            'original_length' => 'required|numeric|min:0.001',
+            'cut_length' => 'required|numeric|min:0.001|lte:original_length',
+            'used_for' => 'nullable|string|max:255',
+            'remarks' => 'nullable|string',
         ];
     }
 }

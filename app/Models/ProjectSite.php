@@ -13,7 +13,17 @@ class ProjectSite extends Model
         'location',
         'sector',
         'status',
-        'notes'
+        'notes',
+        'amount_needed_08',
+        'amount_needed_10',
+        'amount_needed_12',
+        'amount_needed_14',
+        'amount_needed_16',
+        'amount_needed_18',
+        'amount_needed_20',
+        'amount_needed_24',
+        'amount_needed_28',
+        'amount_needed_32',
     ];
 
     public static function boot()

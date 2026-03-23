@@ -44,7 +44,7 @@
         <!-- Filter Bar -->
         <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-200/60">
             <form method="GET" action="{{ route('admin.rebar.cutting-logs.index') }}"
-                class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4">
                 <div class="md:col-span-1">
                     <label
                         class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Search</label>
@@ -76,12 +76,34 @@
                     </select>
                 </div>
                 <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Steel Grade</label>
+                    <select name="steel_grade"
+                        class="w-full bg-slate-50 border-slate-200 rounded-xl py-2.5 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600">
+                        <option value="">All Grades</option>
+                        @foreach([300, 400, 500, 600] as $grade)
+                            <option value="{{ $grade }}" {{ request('steel_grade') == $grade ? 'selected' : '' }}>Grade {{ $grade }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Min Len</label>
+                        <input type="number" step="0.01" name="min_length" value="{{ request('min_length') }}" placeholder="0.0"
+                            class="w-full bg-slate-50 border-slate-200 rounded-xl py-2.5 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 px-3">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Max Len</label>
+                        <input type="number" step="0.01" name="max_length" value="{{ request('max_length') }}" placeholder="12.0"
+                            class="w-full bg-slate-50 border-slate-200 rounded-xl py-2.5 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 px-3">
+                    </div>
+                </div>
+                <div>
                     <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Filter by
                         Date</label>
                     <input type="date" name="date" value="{{ request('date') }}"
-                        class="w-full bg-slate-50 border-slate-200 rounded-xl py-2.5 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600">
+                        class="w-full bg-slate-50 border-slate-200 rounded-xl py-2.5 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 px-3">
                 </div>
-                <div class="flex items-end gap-3">
+                <div class="flex items-end gap-3 md:col-span-1">
                     <button type="submit"
                         class="flex-1 py-2.5 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all">Filter</button>
                     <a href="{{ route('admin.rebar.cutting-logs.index') }}"
@@ -175,7 +197,12 @@
                                         <div class="flex flex-col">
                                             <span class="text-[9px] font-black text-rose-400 uppercase">Used</span>
                                             <span
-                                                class="text-sm font-black text-rose-500">{{ number_format($log->cut_length, 2) }}m</span>
+                                                 class="text-sm font-black text-rose-500">{{ number_format($log->cut_length, 2) }}m</span>
+                                        </div>
+                                        <div class="w-px h-8 bg-slate-100 mx-1"></div>
+                                        <div class="flex flex-col">
+                                            <span class="text-[9px] font-black text-cyan-500 uppercase">Weight</span>
+                                            <span class="text-sm font-black text-slate-800">{{ number_format($log->weight_kg, 2) }}kg</span>
                                         </div>
                                     </div>
                                 </td>

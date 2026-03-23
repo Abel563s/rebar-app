@@ -88,6 +88,29 @@
                         @error('sector') <p class="text-rose-500 text-xs mt-2 font-bold">{{ $message }}</p> @enderror
                     </div>
 
+                    <!-- Diameter Amount Needed (KG) -->
+                    <div class="col-span-2 pt-6">
+                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                                <i data-lucide="calculator" class="w-4 h-4"></i>
+                            </div>
+                            Steel Requirement (Qty Needed in PCS)
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                            @foreach(['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'] as $d)
+                                <div class="space-y-2">
+                                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Ø{{ $d }}mm</label>
+                                    <div class="relative">
+                                        <input type="number" name="amount_needed_{{ $d }}" 
+                                            value="{{ old('amount_needed_'.$d, $site->{'amount_needed_'.$d} ?? 0) }}" 
+                                            class="w-full bg-slate-50 border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-bold text-slate-700 text-sm">
+                                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-black text-slate-300">PCS</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     <!-- Notes -->
                     <div class="col-span-2">
                         <label
@@ -99,20 +122,21 @@
                 </div>
 
                 <div class="flex items-center justify-between pt-8 border-t border-slate-100">
-                    <form action="{{ route('admin.rebar.sites.destroy', $site) }}" method="POST"
-                        onsubmit="return confirm('Are you sure you want to delete this site? All associated requirements will also be deleted.');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="px-6 py-3 bg-rose-50 text-rose-600 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-rose-100 transition-all">
-                            Delete Site
-                        </button>
-                    </form>
+                    <button type="button" 
+                        onclick="if(confirm('Are you sure you want to delete this site? All associated requirements will also be deleted.')) document.getElementById('delete-site-form').submit();"
+                        class="px-6 py-3 bg-rose-50 text-rose-600 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-rose-100 transition-all">
+                        Delete Site
+                    </button>
                     <button type="submit"
                         class="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-cyan-500/20 hover:scale-[1.02] hover:shadow-cyan-500/30 transition-all active:scale-95">
                         Update Project Site
                     </button>
                 </div>
+            </form>
+
+            <form id="delete-site-form" action="{{ route('admin.rebar.sites.destroy', $site) }}" method="POST" class="hidden">
+                 @csrf
+                 @method('DELETE')
             </form>
         </div>
     </div>

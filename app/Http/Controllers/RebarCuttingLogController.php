@@ -23,6 +23,18 @@ class RebarCuttingLogController extends Controller
             $query->where('bar_diameter', request('diameter'));
         }
 
+        if (request('steel_grade')) {
+            $query->where('steel_grade', request('steel_grade'));
+        }
+
+        if (request('min_length')) {
+            $query->where('cut_length', '>=', request('min_length'));
+        }
+
+        if (request('max_length')) {
+            $query->where('cut_length', '<=', request('max_length'));
+        }
+
         if (request('date')) {
             $query->whereDate('date', request('date'));
         }
@@ -69,9 +81,9 @@ class RebarCuttingLogController extends Controller
         $requirement->quantity -= $validated['quantity_cut'];
         $requirement->save();
 
-        // Smart Automation: Create Off-cut if remaining length > 0.3m
-        // Note: quantity_cut determines how many offcuts are created
-        if ($log->remaining_length > 0.3) {
+        // Smart Automation: Create Off-cut if remaining length is NOT wastage
+        $rebarService = app(\App\Services\RebarService::class);
+        if ($log->remaining_length > 0 && !$rebarService->isWastage($log->bar_diameter, $log->remaining_length)) {
             $offcut = \App\Models\Offcut::create([
                 'site_id' => $requirement->site_id,
                 'bar_diameter' => $log->bar_diameter,

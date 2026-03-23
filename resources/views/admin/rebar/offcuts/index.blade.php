@@ -144,6 +144,11 @@
                                             <span
                                                 class="text-sm font-black text-slate-900">{{ number_format($offcut->length, 2) }}m</span>
                                         </div>
+                                        <div class="w-px h-8 bg-slate-100"></div>
+                                        <div class="flex flex-col">
+                                            <span class="text-[9px] font-black text-cyan-500 uppercase tracking-widest leading-none">Weight</span>
+                                            <span class="text-sm font-black text-slate-900">{{ number_format($offcut->weight_kg, 2) }}kg</span>
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="px-8 py-6">

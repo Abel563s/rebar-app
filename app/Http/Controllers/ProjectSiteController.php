@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProjectSite;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProjectSiteController extends Controller
 {
@@ -27,6 +28,16 @@ class ProjectSiteController extends Controller
             'sector' => 'nullable|string|max:255',
             'status' => 'required|in:Active,Completed',
             'notes' => 'nullable|string',
+            'amount_needed_08' => 'nullable|numeric|min:0',
+            'amount_needed_10' => 'nullable|numeric|min:0',
+            'amount_needed_12' => 'nullable|numeric|min:0',
+            'amount_needed_14' => 'nullable|numeric|min:0',
+            'amount_needed_16' => 'nullable|numeric|min:0',
+            'amount_needed_18' => 'nullable|numeric|min:0',
+            'amount_needed_20' => 'nullable|numeric|min:0',
+            'amount_needed_24' => 'nullable|numeric|min:0',
+            'amount_needed_28' => 'nullable|numeric|min:0',
+            'amount_needed_32' => 'nullable|numeric|min:0',
         ]);
 
         ProjectSite::create($validated);
@@ -41,21 +52,25 @@ class ProjectSiteController extends Controller
         $offcuts = $site->offcuts()->latest()->get();
 
         // Metrics calculation
-        $totalLength = $site->requirements()->sum(\DB::raw('required_length * quantity')); // in meters
+        $totalLength = $site->requirements()->sum('total_length');
         $totalBars = $site->requirements()->sum('quantity');
+        $tonnage = $site->requirements()->sum('weight_kg') / 1000; // KG to Tons
 
-        // Estimated tonnage (assuming roughly)
-        // Weight (kg) = (d^2 / 162) * length(m)
-        // For simplicity we can just sum weights if we had a weight column or a helper.
-        // Let's assume a default diameter of 12 for estimation if not specified, 
-        // but it's better to sum per diameter.
+        $usageByDiameter = DB::table('rebar_cutting_logs')
+            ->join('rebar_requirements', 'rebar_cutting_logs.rebar_requirement_id', '=', 'rebar_requirements.id')
+            ->where('rebar_requirements.site_id', $site->id)
+            ->select('rebar_requirements.bar_diameter', DB::raw('SUM(rebar_cutting_logs.weight_kg) as total_weight'), DB::raw('SUM(rebar_cutting_logs.quantity_cut) as total_pieces'))
+            ->groupBy('rebar_requirements.bar_diameter')
+            ->get()
+            ->keyBy('bar_diameter');
 
-        $tonnage = $site->requirements()->get()->sum(function ($req) {
-            // Weight formula: d^2 / 162 * length (meters)
-            return (($req->bar_diameter * $req->bar_diameter) / 162) * ($req->required_length * $req->quantity);
-        }) / 1000; // to tonnes
+        $totalPcsNeeded = 0;
+        foreach (['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'] as $d) {
+            $totalPcsNeeded += (int)($site->{'amount_needed_'.$d} ?? 0);
+        }
+        $totalKgCut = $usageByDiameter->sum('total_weight');
 
-        return view('admin.rebar.sites.show', compact('site', 'requirements', 'offcuts', 'totalLength', 'totalBars', 'tonnage'));
+        return view('admin.rebar.sites.show', compact('site', 'requirements', 'offcuts', 'totalLength', 'totalBars', 'tonnage', 'usageByDiameter', 'totalPcsNeeded', 'totalKgCut'));
     }
 
     public function edit(ProjectSite $site)
@@ -72,6 +87,16 @@ class ProjectSiteController extends Controller
             'sector' => 'nullable|string|max:255',
             'status' => 'required|in:Active,Completed',
             'notes' => 'nullable|string',
+            'amount_needed_08' => 'nullable|numeric|min:0',
+            'amount_needed_10' => 'nullable|numeric|min:0',
+            'amount_needed_12' => 'nullable|numeric|min:0',
+            'amount_needed_14' => 'nullable|numeric|min:0',
+            'amount_needed_16' => 'nullable|numeric|min:0',
+            'amount_needed_18' => 'nullable|numeric|min:0',
+            'amount_needed_20' => 'nullable|numeric|min:0',
+            'amount_needed_24' => 'nullable|numeric|min:0',
+            'amount_needed_28' => 'nullable|numeric|min:0',
+            'amount_needed_32' => 'nullable|numeric|min:0',
         ]);
 
         $site->update($validated);

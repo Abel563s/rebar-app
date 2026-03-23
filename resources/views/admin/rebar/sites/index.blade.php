@@ -45,10 +45,17 @@
                                 </h3>
                                 <p class="text-sm font-bold text-slate-400">{{ $site->project_name }}</p>
                             </div>
-                            <span
-                                class="px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full {{ $site->status === 'Active' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500' }}">
-                                {{ $site->status }}
-                            </span>
+                            <div class="flex flex-col items-end gap-2">
+                                <span
+                                    class="px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full {{ $site->status === 'Active' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500' }}">
+                                    {{ $site->status }}
+                                </span>
+                                <a href="{{ route('admin.rebar.sites.edit', $site) }}" 
+                                   class="p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-xl transition-all"
+                                   title="Edit Site">
+                                    <i data-lucide="settings" class="w-4 h-4"></i>
+                                </a>
+                            </div>
                         </div>
 
                         <!-- Details -->

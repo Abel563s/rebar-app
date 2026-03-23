@@ -23,9 +23,21 @@ class RebarCuttingLog extends Model
                 $model->user_id = auth()->id();
             }
 
-            // Auto-calculate remaining length
+            // Auto-calculate remaining length and weight
             if (isset($model->original_length) && isset($model->cut_length)) {
                 $model->remaining_length = $model->original_length - $model->cut_length;
+                
+                $service = app(\App\Services\RebarService::class);
+                $model->weight_kg = $service->calculateWeight($model->bar_diameter, $model->cut_length, $model->quantity_cut ?? 1);
+            }
+        });
+
+        static::updating(function ($model) {
+            if (isset($model->original_length) && isset($model->cut_length)) {
+                $model->remaining_length = $model->original_length - $model->cut_length;
+                
+                $service = app(\App\Services\RebarService::class);
+                $model->weight_kg = $service->calculateWeight($model->bar_diameter, $model->cut_length, $model->quantity_cut ?? 1);
             }
         });
     }

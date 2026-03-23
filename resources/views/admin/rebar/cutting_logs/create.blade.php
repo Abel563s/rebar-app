@@ -46,8 +46,9 @@
                                         data-diameter="{{ $req->bar_diameter }}"
                                         data-length="{{ $req->required_length }}"
                                         data-quantity="{{ $req->quantity }}"
+                                        data-grade="{{ $req->steel_grade }}"
                                         {{ (old('rebar_requirement_id') ?? request('requirement_id')) == $req->id ? 'selected' : '' }}>
-                                        {{ $req->tracking_id }} | {{ $req->structural_element }} | Ø{{ $req->bar_diameter }}mm | Qty: {{ $req->quantity }}
+                                        {{ $req->tracking_id }} | {{ $req->structural_element }} | Ø{{ $req->bar_diameter }}mm | {{ $req->steel_grade ? 'Grade '.$req->steel_grade.' |' : '' }} Qty: {{ $req->quantity }}
                                     </option>
                                 @endforeach
                             </select>
@@ -91,6 +92,18 @@
                                     class="w-full bg-slate-100 border-transparent rounded-2xl py-4 font-bold text-slate-400 cursor-not-allowed">
                                 <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 uppercase">mm</span>
                             </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Steel Grade <span class="text-rose-500">*</span></label>
+                            <select name="steel_grade" id="steel_grade" required
+                                class="w-full bg-slate-50 border-slate-100 rounded-2xl py-4 flex items-center font-bold text-slate-700 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all shadow-sm">
+                                <option value="">-- Select Grade --</option>
+                                @foreach([300, 400, 500, 600] as $grade)
+                                    <option value="{{ $grade }}" {{ old('steel_grade') == $grade ? 'selected' : '' }}>Grade {{ $grade }}</option>
+                                @endforeach
+                            </select>
+                            @error('steel_grade') <p class="text-rose-500 text-[10px] font-bold mt-1 ml-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                         </div>
 
                         <div class="space-y-3">
@@ -179,6 +192,7 @@
             document.addEventListener('DOMContentLoaded', function () {
                 const reqSelect = document.getElementById('requirement_id');
                 const diameterInput = document.getElementById('bar_diameter');
+                const steelGradeSelect = document.getElementById('steel_grade');
                 const cutLengthInput = document.getElementById('cut_length');
                 const originalLengthInput = document.getElementById('original_length');
                 const quantityCutInput = document.getElementById('quantity_cut');
@@ -192,12 +206,16 @@
                     const selectedOption = reqSelect.options[reqSelect.selectedIndex];
                     if (selectedOption.value) {
                         diameterInput.value = selectedOption.dataset.diameter;
+                        if (selectedOption.dataset.grade) {
+                            steelGradeSelect.value = selectedOption.dataset.grade;
+                        }
                         cutLengthInput.value = selectedOption.dataset.length;
                         maxQuantity = parseInt(selectedOption.dataset.quantity) || 0;
                         quantityCutInput.max = maxQuantity;
                         updateQuantityHint();
                     } else {
                         diameterInput.value = '';
+                        steelGradeSelect.value = '';
                         cutLengthInput.value = '';
                         maxQuantity = 0;
                         quantityHint.textContent = 'This will reduce the requirement quantity';

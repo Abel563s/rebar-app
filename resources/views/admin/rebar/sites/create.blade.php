@@ -77,6 +77,29 @@
                         @error('status') <p class="text-rose-500 text-xs mt-2 font-bold">{{ $message }}</p> @enderror
                     </div>
 
+                    <!-- Diameter Amount Needed (KG) -->
+                    <div class="col-span-2 pt-6">
+                        <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                                <i data-lucide="calculator" class="w-4 h-4"></i>
+                            </div>
+                            Steel Requirement (Qty Needed in PCS)
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                            @foreach(['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'] as $d)
+                                <div class="space-y-2">
+                                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Ø{{ $d }}mm</label>
+                                    <div class="relative">
+                                        <input type="number" name="amount_needed_{{ $d }}" 
+                                            value="{{ old('amount_needed_'.$d, 0) }}" 
+                                            class="w-full bg-slate-50 border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-bold text-slate-700 text-sm">
+                                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-black text-slate-300">PCS</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     <!-- Notes -->
                     <div class="col-span-2">
                         <label

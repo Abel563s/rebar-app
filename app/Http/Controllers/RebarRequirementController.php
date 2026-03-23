@@ -13,8 +13,33 @@ class RebarRequirementController extends Controller
      */
     public function index()
     {
-        // Redirect to sites index - cutting logs page handles cross-site view
-        return redirect()->route('admin.rebar.sites.index');
+        $query = RebarRequirement::with('site');
+
+        if (request('search')) {
+            $search = request('search');
+            $query->where(function($q) use ($search) {
+                $q->where('tracking_id', 'like', "%{$search}%")
+                  ->orWhere('structural_element', 'like', "%{$search}%")
+                  ->orWhere('drawing_reference', 'like', "%{$search}%");
+            });
+        }
+
+        if (request('diameter')) {
+            $query->where('bar_diameter', request('diameter'));
+        }
+
+        if (request('steel_grade')) {
+            $query->where('steel_grade', request('steel_grade'));
+        }
+
+        if (request('element')) {
+            $query->where('structural_element', 'like', '%' . request('element') . '%');
+        }
+
+        $totalRequirements = $query->count();
+        $requirements = $query->latest()->paginate(15);
+
+        return view('admin.rebar.requirements.index', compact('requirements', 'totalRequirements'));
     }
 
     /**

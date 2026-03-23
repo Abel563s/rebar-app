@@ -25,6 +25,7 @@ class StoreRebarRequirementRequest extends FormRequest
             'site_id' => 'required|exists:project_sites,id',
             'structural_element' => 'required|string|max:255',
             'bar_diameter' => 'required|integer|min:1',
+            'steel_grade' => 'required|string|in:300,400,500,600',
             'required_length' => 'required|numeric|min:0.001',
             'quantity' => 'required|integer|min:1',
             'drawing_reference' => 'nullable|string|max:255',

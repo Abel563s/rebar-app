@@ -31,5 +31,11 @@ class Offcut extends Model
     {
         return $this->belongsTo(ProjectSite::class, 'site_id');
     }
+
+    public function getWeightKgAttribute()
+    {
+        // Weight (kg) = (d^2 / 162) * length(m)
+        return (($this->bar_diameter * $this->bar_diameter) / 162) * ($this->length * $this->quantity);
+    }
 }
 

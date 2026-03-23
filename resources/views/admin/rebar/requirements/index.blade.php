@@ -61,8 +61,18 @@
                     <select name="diameter"
                         class="w-full py-3 bg-slate-50 border-transparent rounded-xl font-bold text-sm text-slate-700 focus:ring-4 focus:ring-cyan-500/10 focus:bg-white transition-all">
                         <option value="">All Sizes</option>
-                        @foreach([10, 12, 16, 20, 25, 32] as $d)
+                        @foreach([10, 12, 14, 16, 18, 20, 24, 25, 32] as $d)
                             <option value="{{ $d }}" {{ request('diameter') == $d ? 'selected' : '' }}>Ø{{ $d }}mm</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Steel Grade</label>
+                    <select name="steel_grade"
+                        class="w-full py-3 bg-slate-50 border-transparent rounded-xl font-bold text-sm text-slate-700 focus:ring-4 focus:ring-cyan-500/10 focus:bg-white transition-all">
+                        <option value="">All Grades</option>
+                        @foreach([300, 400, 500, 600] as $grade)
+                            <option value="{{ $grade }}" {{ request('steel_grade') == $grade ? 'selected' : '' }}>Grade {{ $grade }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -153,16 +163,21 @@
                                     </div>
                                 </td>
                                 <td class="px-8 py-5">
-                                    <div class="flex flex-col gap-1">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
-                                            <span
-                                                class="text-sm font-black text-slate-700 tracking-tight">Ø{{ $req->bar_diameter }}mm</span>
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
+                                                <span class="text-sm font-black text-slate-700 tracking-tight">Ø{{ $req->bar_diameter }}mm</span>
+                                                @if($req->steel_grade)
+                                                    <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[8px] font-black rounded uppercase border border-blue-100 italic">Grade {{ $req->steel_grade }}</span>
+                                                @endif
+                                            </div>
+                                            <p class="text-[10px] font-black text-slate-800 uppercase ml-4">
+                                                Weight: <span class="text-cyan-600">{{ number_format($req->weight_kg, 1) }}kg</span>
+                                            </p>
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase ml-4">L:
+                                                {{ $req->required_length }}m | T: {{ number_format($req->total_length, 2) }}m
+                                            </p>
                                         </div>
-                                        <p class="text-[10px] font-bold text-slate-400 uppercase ml-4">L:
-                                            {{ $req->required_length }}mm | T: {{ number_format($req->total_length, 1) }}m
-                                        </p>
-                                    </div>
                                 </td>
                                 <td class="px-8 py-5">
                                     <span

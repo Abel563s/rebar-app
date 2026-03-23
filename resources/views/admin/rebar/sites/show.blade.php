@@ -108,20 +108,89 @@
                         </div>
                     </div>
                     <div
-                        class="bg-gradient-to-br from-amber-50 to-white rounded-3xl p-6 text-center border border-amber-100 hover:shadow-lg hover:scale-105 transition-all">
-                        <span
-                            class="text-[10px] font-black text-amber-600 uppercase tracking-widest block mb-2">Optimization</span>
-                        <div class="flex items-center justify-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                            <span class="text-xs font-black text-amber-600">PENDING</span>
+                        class="bg-gradient-to-br from-slate-50 to-white rounded-3xl p-6 text-center border border-slate-100 hover:shadow-lg hover:scale-105 transition-all">
+                        <span class="text-[10px] font-black {{ $totalPcsNeeded > 0 ? 'text-cyan-500' : 'text-slate-400' }} uppercase tracking-widest block mb-1">Budgeted Material</span>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span class="text-2xl font-black text-slate-900">{{ number_format($totalPcsNeeded) }}</span>
+                            <span class="text-xs font-black text-slate-400">PCS</span>
                         </div>
                     </div>
                     <div
                         class="bg-gradient-to-br from-slate-50 to-white rounded-3xl p-6 text-center border border-slate-100 hover:shadow-lg hover:scale-105 transition-all">
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Waste
-                            %</span>
-                        <span class="text-2xl font-black text-slate-300">--</span>
+                        <span class="text-[10px] font-black {{ $totalKgCut > 0 ? 'text-emerald-500' : 'text-slate-400' }} uppercase tracking-widest block mb-2">Total KG Cut</span>
+                        <div class="flex items-baseline justify-center gap-1">
+                            <span class="text-2xl font-black text-slate-900">{{ number_format($totalKgCut, 1) }}</span>
+                            <span class="text-xs font-black text-slate-400">KG</span>
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Steel Requirement Analysis -->
+        <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-200/60 overflow-hidden relative">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-50/50 rounded-full blur-3xl opacity-50"></div>
+            <div class="p-8 md:p-10 relative">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-lg">
+                            <i data-lucide="bar-chart-3" class="w-6 h-6 text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-slate-900 tracking-tight">Steel Requirement Analysis</h3>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Comparison of Plan vs. Actual Fabrication</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                    @foreach(['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'] as $d)
+                        @php
+                            $diameter = (int)$d;
+                            $needed = $site->{'amount_needed_'.$d} ?? 0;
+                            $usage = $usageByDiameter[$diameter] ?? null;
+                            $actual = $usage->total_pieces ?? 0;
+                            $actualWeight = $usage->total_weight ?? 0;
+                            $diff = $needed - $actual;
+                            $statusColor = $diff > 0 ? 'text-amber-500' : ($diff < 0 ? 'text-rose-500' : 'text-emerald-500');
+                            $bgColor = $diff > 0 ? 'bg-amber-50/30' : ($diff < 0 ? 'bg-rose-50/30' : 'bg-emerald-50/30');
+                            $borderColor = $diff > 0 ? 'border-amber-100' : ($diff < 0 ? 'border-rose-100' : 'border-emerald-100');
+                        @endphp
+                        <div class="p-6 rounded-3xl border {{ $borderColor }} {{ $bgColor }} transition-all hover:shadow-lg group">
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="px-4 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-900 shadow-sm group-hover:border-cyan-200 group-hover:text-cyan-600 transition-all font-mono tracking-tighter">Ø{{ $d }}mm</span>
+                                @if($actual > 0)
+                                    <div class="flex items-center gap-1.5 px-2 py-1 bg-white border border-emerald-100 rounded-lg shadow-sm">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        <span class="text-[8px] font-black text-emerald-600 uppercase tracking-tighter">FABRICATED</span>
+                                    </div>
+                                @endif
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Plan (Needed)</span>
+                                    <span class="text-[11px] font-black text-slate-800">{{ number_format($needed) }} PCS</span>
+                                </div>
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Actual (Used)</span>
+                                    <span class="text-[11px] font-black text-cyan-600">{{ number_format($actual) }} PCS</span>
+                                </div>
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Total Weight</span>
+                                    <span class="text-[11px] font-black text-slate-600">{{ number_format($actualWeight, 1) }} kg</span>
+                                </div>
+                                <div class="h-px bg-slate-200/50 my-2"></div>
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[8px] font-black {{ $statusColor }} uppercase tracking-widest">Difference</span>
+                                    <div class="flex flex-col items-end">
+                                        <span class="text-sm font-black {{ $statusColor }}">{{ number_format($diff, 1) }} kg</span>
+                                        <span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">{{ number_format($actualPieces) }} Pieces Recorded</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -247,21 +316,6 @@
                                     </tr>
                                 @endforelse
                             </tbody>
-                            @if($requirements->isNotEmpty())
-                                <tfoot>
-                                    <tr class="bg-cyan-50/30">
-                                        <td colspan="3"
-                                            class="px-6 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">
-                                            Site Summaries:</td>
-                                        <td class="px-6 py-5 text-center font-black text-slate-900">Σ
-                                            {{ number_format($totalBars) }}
-                                        </td>
-                                        <td class="px-6 py-5 text-right font-black text-[#00adc5] text-lg">Σ
-                                            {{ number_format($totalLength, 2) }}m
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            @endif
                         </table>
                     </div>
                     @if($requirements->hasPages())
@@ -319,8 +373,8 @@
                                                 <div class="flex items-center justify-center gap-3">
                                                     <span
                                                         class="text-xs font-bold text-slate-600 px-2 py-1 bg-slate-100 rounded-md">Ø{{ $offcut->bar_diameter }}mm</span>
-                                                    <span
-                                                        class="text-xs font-black text-slate-900">{{ number_format($offcut->length, 2) }}m</span>
+                                                    <span class="text-xs font-black text-slate-900">{{ number_format($offcut->length, 2) }}m</span>
+                                                    <span class="px-2 py-0.5 bg-cyan-50 text-cyan-600 rounded text-[9px] font-black border border-cyan-100">{{ number_format($offcut->weight_kg, 2) }}kg</span>
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 text-center">
