@@ -184,8 +184,8 @@
                                 <div class="flex justify-between items-end">
                                     <span class="text-[8px] font-black {{ $statusColor }} uppercase tracking-widest">Difference</span>
                                     <div class="flex flex-col items-end">
-                                        <span class="text-sm font-black {{ $statusColor }}">{{ number_format($diff, 1) }} kg</span>
-                                        <span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">{{ number_format($actualPieces) }} Pieces Recorded</span>
+                                        <span class="text-sm font-black {{ $statusColor }}">{{ number_format($diff) }} PCS</span>
+                                        <span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">{{ number_format($actual) }} Pieces Recorded</span>
                                     </div>
                                 </div>
                             </div>

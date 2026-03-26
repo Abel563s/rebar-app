@@ -57,10 +57,9 @@ class ProjectSiteController extends Controller
         $tonnage = $site->requirements()->sum('weight_kg') / 1000; // KG to Tons
 
         $usageByDiameter = DB::table('rebar_cutting_logs')
-            ->join('rebar_requirements', 'rebar_cutting_logs.rebar_requirement_id', '=', 'rebar_requirements.id')
-            ->where('rebar_requirements.site_id', $site->id)
-            ->select('rebar_requirements.bar_diameter', DB::raw('SUM(rebar_cutting_logs.weight_kg) as total_weight'), DB::raw('SUM(rebar_cutting_logs.quantity_cut) as total_pieces'))
-            ->groupBy('rebar_requirements.bar_diameter')
+            ->where('site_id', $site->id)
+            ->select('bar_diameter', DB::raw('SUM(weight_kg) as total_weight'), DB::raw('SUM(quantity_cut) as total_pieces'))
+            ->groupBy('bar_diameter')
             ->get()
             ->keyBy('bar_diameter');
 
