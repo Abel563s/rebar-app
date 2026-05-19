@@ -52,6 +52,11 @@ class RebarCuttingLog extends Model
         return $this->belongsTo(Offcut::class);
     }
 
+    public function reusedOffcut()
+    {
+        return $this->belongsTo(Offcut::class, 'reused_offcut_id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

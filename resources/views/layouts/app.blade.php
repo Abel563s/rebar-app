@@ -35,6 +35,10 @@
             display: none !important;
         }
 
+        html {
+            font-size: 14px !important;
+        }
+
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             -webkit-font-smoothing: antialiased;

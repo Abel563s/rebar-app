@@ -47,6 +47,7 @@
                                         data-length="{{ $req->required_length }}"
                                         data-quantity="{{ $req->quantity }}"
                                         data-grade="{{ $req->steel_grade }}"
+                                        data-site-id="{{ $req->site_id }}"
                                         {{ (old('rebar_requirement_id') ?? request('requirement_id')) == $req->id ? 'selected' : '' }}>
                                         {{ $req->tracking_id }} | {{ $req->structural_element }} | Ø{{ $req->bar_diameter }}mm | {{ $req->steel_grade ? 'Grade '.$req->steel_grade.' |' : '' }} Qty: {{ $req->quantity }}
                                     </option>
@@ -104,6 +105,33 @@
                                 @endforeach
                             </select>
                             @error('steel_grade') <p class="text-rose-500 text-[10px] font-bold mt-1 ml-1 uppercase tracking-wider">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Source Material <span class="text-rose-500">*</span></label>
+                            <select name="source_type" id="source_type" required
+                                class="w-full bg-slate-50 border-slate-100 rounded-2xl py-4 flex items-center font-bold text-slate-700 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all shadow-sm">
+                                <option value="standard">Standard Bar (12m)</option>
+                                <option value="offcut">Re-use Off-cut from Inventory</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-3 md:col-span-2 hidden animate-fade-in" id="offcut_selector_container">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Select Reusable Off-cut <span class="text-rose-500">*</span></label>
+                            <select name="reused_offcut_id" id="reused_offcut_id"
+                                class="w-full bg-slate-50 border-slate-100 rounded-2xl py-4 flex items-center font-bold text-slate-700 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all shadow-sm">
+                                <option value="">-- Choose available off-cut --</option>
+                                @foreach($availableOffcuts as $off)
+                                    <option value="{{ $off->id }}"
+                                        data-site-id="{{ $off->site_id }}"
+                                        data-diameter="{{ $off->bar_diameter }}"
+                                        data-length="{{ $off->length }}"
+                                        data-quantity="{{ $off->quantity }}">
+                                        {{ $off->offcut_code }} | L: {{ number_format($off->length, 2) }}m | Ø{{ $off->bar_diameter }}mm | Qty: {{ $off->quantity }} pcs | Loc: {{ $off->storage_location ?? 'On Site' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <p class="text-[9px] font-bold text-emerald-600 ml-1" id="offcut_hint">Select an off-cut matching the requirement diameter</p>
                         </div>
 
                         <div class="space-y-3">
@@ -188,8 +216,7 @@
     </div>
 
     @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
+        <script>            document.addEventListener('DOMContentLoaded', function () {
                 const reqSelect = document.getElementById('requirement_id');
                 const diameterInput = document.getElementById('bar_diameter');
                 const steelGradeSelect = document.getElementById('steel_grade');
@@ -199,6 +226,11 @@
                 const remainderPreview = document.getElementById('remainder_preview');
                 const statusIndicator = document.getElementById('status_indicator');
                 const quantityHint = document.getElementById('quantity_remaining_hint');
+
+                const sourceTypeSelect = document.getElementById('source_type');
+                const offcutSelectorContainer = document.getElementById('offcut_selector_container');
+                const reusedOffcutSelect = document.getElementById('reused_offcut_id');
+                const offcutHint = document.getElementById('offcut_hint');
 
                 let maxQuantity = 0;
 
@@ -212,6 +244,10 @@
                         cutLengthInput.value = selectedOption.dataset.length;
                         maxQuantity = parseInt(selectedOption.dataset.quantity) || 0;
                         quantityCutInput.max = maxQuantity;
+                        
+                        // Filter available offcuts
+                        filterOffcuts(selectedOption.dataset.diameter, selectedOption.dataset.siteId);
+                        
                         updateQuantityHint();
                     } else {
                         diameterInput.value = '';
@@ -219,7 +255,109 @@
                         cutLengthInput.value = '';
                         maxQuantity = 0;
                         quantityHint.textContent = 'This will reduce the requirement quantity';
+                        
+                        // Reset offcuts
+                        resetOffcutFilter();
                     }
+                    calculateRemainder();
+                }
+
+                function filterOffcuts(diameter, siteId) {
+                    let matchCount = 0;
+                    const offcutOptions = reusedOffcutSelect.options;
+                    
+                    for (let i = 0; i < offcutOptions.length; i++) {
+                        const opt = offcutOptions[i];
+                        if (!opt.value) continue;
+                        
+                        const optDiameter = opt.dataset.diameter;
+                        const optSiteId = opt.dataset.siteId;
+                        
+                        if (String(optDiameter) === String(diameter) && String(optSiteId) === String(siteId)) {
+                            opt.style.display = '';
+                            matchCount++;
+                        } else {
+                            opt.style.display = 'none';
+                        }
+                    }
+                    
+                    reusedOffcutSelect.value = '';
+                    
+                    if (matchCount > 0) {
+                        sourceTypeSelect.options[1].disabled = false;
+                        sourceTypeSelect.options[1].textContent = `Re-use Off-cut from Inventory (${matchCount} available)`;
+                        offcutHint.innerHTML = `<span class="text-emerald-600">✓ Found ${matchCount} matching off-cuts for Ø${diameter}mm on this site.</span>`;
+                    } else {
+                        sourceTypeSelect.value = 'standard';
+                        sourceTypeSelect.options[1].disabled = true;
+                        sourceTypeSelect.options[1].textContent = `Re-use Off-cut from Inventory (None available)`;
+                        offcutSelectorContainer.classList.add('hidden');
+                        reusedOffcutSelect.required = false;
+                        originalLengthInput.readOnly = false;
+                        originalLengthInput.classList.remove('bg-slate-100', 'cursor-not-allowed', 'text-slate-400');
+                        offcutHint.innerHTML = `<span class="text-amber-600">⚠ No matching available off-cuts for Ø${diameter}mm on this site.</span>`;
+                    }
+                }
+
+                function resetOffcutFilter() {
+                    const offcutOptions = reusedOffcutSelect.options;
+                    for (let i = 0; i < offcutOptions.length; i++) {
+                        offcutOptions[i].style.display = '';
+                    }
+                    reusedOffcutSelect.value = '';
+                    sourceTypeSelect.value = 'standard';
+                    sourceTypeSelect.options[1].disabled = false;
+                    sourceTypeSelect.options[1].textContent = 'Re-use Off-cut from Inventory';
+                    offcutSelectorContainer.classList.add('hidden');
+                    reusedOffcutSelect.required = false;
+                    originalLengthInput.readOnly = false;
+                    originalLengthInput.classList.remove('bg-slate-100', 'cursor-not-allowed', 'text-slate-400');
+                    offcutHint.textContent = 'Please select a matching off-cut';
+                }
+
+                function handleSourceTypeChange() {
+                    if (sourceTypeSelect.value === 'offcut') {
+                        offcutSelectorContainer.classList.remove('hidden');
+                        reusedOffcutSelect.required = true;
+                        originalLengthInput.readOnly = true;
+                        originalLengthInput.classList.add('bg-slate-100', 'cursor-not-allowed', 'text-slate-400');
+                        handleOffcutSelectChange();
+                    } else {
+                        offcutSelectorContainer.classList.add('hidden');
+                        reusedOffcutSelect.required = false;
+                        reusedOffcutSelect.value = '';
+                        originalLengthInput.readOnly = false;
+                        originalLengthInput.classList.remove('bg-slate-100', 'cursor-not-allowed', 'text-slate-400');
+                        originalLengthInput.value = '12';
+                        quantityCutInput.max = maxQuantity;
+                        updateQuantityHint();
+                        calculateRemainder();
+                    }
+                }
+
+                function handleOffcutSelectChange() {
+                    const selectedOffcut = reusedOffcutSelect.options[reusedOffcutSelect.selectedIndex];
+                    if (selectedOffcut && selectedOffcut.value) {
+                        const offcutLen = parseFloat(selectedOffcut.dataset.length);
+                        const offcutQty = parseInt(selectedOffcut.dataset.quantity);
+                        
+                        originalLengthInput.value = offcutLen.toFixed(2);
+                        
+                        // Quantity being cut cannot exceed available quantity of offcut OR requirement
+                        const limitQty = Math.min(maxQuantity, offcutQty);
+                        quantityCutInput.max = limitQty;
+                        
+                        if (parseInt(quantityCutInput.value) > limitQty) {
+                            quantityCutInput.value = limitQty;
+                        }
+                        
+                        offcutHint.innerHTML = `<span class="text-emerald-600">Selected off-cut length: ${offcutLen}m (${offcutQty} pieces available)</span>`;
+                    } else {
+                        originalLengthInput.value = '';
+                        quantityCutInput.max = maxQuantity;
+                        offcutHint.textContent = 'Please choose an off-cut from the dropdown list';
+                    }
+                    updateQuantityHint();
                     calculateRemainder();
                 }
 
@@ -269,6 +407,8 @@
                 originalLengthInput.addEventListener('input', calculateRemainder);
                 cutLengthInput.addEventListener('input', calculateRemainder);
                 quantityCutInput.addEventListener('input', updateQuantityHint);
+                sourceTypeSelect.addEventListener('change', handleSourceTypeChange);
+                reusedOffcutSelect.addEventListener('change', handleOffcutSelectChange);
 
                 // Init if pre-selected
                 if (reqSelect.value) {

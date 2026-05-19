@@ -41,6 +41,7 @@ class StoreRebarCuttingLogRequest extends FormRequest
             'cut_length' => 'required|numeric|min:0.001|lte:original_length',
             'used_for' => 'nullable|string|max:255',
             'remarks' => 'nullable|string',
+            'reused_offcut_id' => 'nullable|exists:offcuts,id',
         ];
     }
 }

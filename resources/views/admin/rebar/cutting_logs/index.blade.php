@@ -192,6 +192,9 @@
                                             <span class="text-[9px] font-black text-slate-400 uppercase">Original</span>
                                             <span
                                                 class="text-sm font-bold text-slate-700">{{ number_format($log->original_length, 2) }}m</span>
+                                            @if($log->reusedOffcut)
+                                                <span class="text-[8px] font-black bg-emerald-50 text-emerald-600 rounded px-1.5 py-0.5 border border-emerald-100 uppercase tracking-tight mt-1 inline-block" title="Reused Off-cut: {{ $log->reusedOffcut->offcut_code }}">Reused Offcut</span>
+                                            @endif
                                         </div>
                                         <i data-lucide="arrow-right" class="w-3 h-3 text-slate-300"></i>
                                         <div class="flex flex-col">
@@ -241,11 +244,17 @@
                                                 </div>
                                             @endif
                                         </div>
+                                    @elseif($log->remaining_length == 0)
+                                        <div class="flex items-center gap-2">
+                                            <span
+                                                class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest">No Wastage</span>
+                                            <span class="text-[9px] text-slate-400 italic">(0.00m)</span>
+                                        </div>
                                     @else
                                         <div class="flex items-center gap-2">
                                             <span
                                                 class="px-3 py-1 bg-rose-50 text-rose-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Wastage</span>
-                                            <span class="text-[9px] text-slate-400 italic">(< 0.3m)</span>
+                                            <span class="text-[9px] text-slate-400 italic">({{ number_format($log->remaining_length, 2) }}m)</span>
                                         </div>
                                     @endif
                                 </td>

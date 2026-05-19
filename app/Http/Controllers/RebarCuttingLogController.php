@@ -13,7 +13,7 @@ class RebarCuttingLogController extends Controller
      */
     public function index()
     {
-        $query = RebarCuttingLog::with('requirement', 'offcut', 'site');
+        $query = RebarCuttingLog::with('requirement', 'offcut', 'site', 'reusedOffcut');
 
         if (request('site_id')) {
             $query->where('site_id', request('site_id'));
@@ -61,8 +61,9 @@ class RebarCuttingLogController extends Controller
     public function create()
     {
         // Typically created from the requirement view, but can exist standalone
-        $requirements = \App\Models\RebarRequirement::latest()->limit(50)->get();
-        return view('admin.rebar.cutting_logs.create', compact('requirements'));
+        $requirements = \App\Models\RebarRequirement::with('site')->latest()->limit(50)->get();
+        $availableOffcuts = \App\Models\Offcut::where('status', 'Available')->where('quantity', '>', 0)->get();
+        return view('admin.rebar.cutting_logs.create', compact('requirements', 'availableOffcuts'));
     }
 
     /**
@@ -80,6 +81,16 @@ class RebarCuttingLogController extends Controller
         // Decrease the requirement quantity by the amount cut
         $requirement->quantity -= $validated['quantity_cut'];
         $requirement->save();
+
+        // Automatically decrease reused offcut quantity
+        if (!empty($validated['reused_offcut_id'])) {
+            $sourceOffcut = \App\Models\Offcut::findOrFail($validated['reused_offcut_id']);
+            $sourceOffcut->quantity = max(0, $sourceOffcut->quantity - $validated['quantity_cut']);
+            if ($sourceOffcut->quantity == 0) {
+                $sourceOffcut->status = 'Used';
+            }
+            $sourceOffcut->save();
+        }
 
         // Smart Automation: Create Off-cut if remaining length is NOT wastage
         $rebarService = app(\App\Services\RebarService::class);
@@ -103,6 +114,9 @@ class RebarCuttingLogController extends Controller
         $message .= $validated['quantity_cut'] . ' bar(s) cut. ';
         $message .= 'Remaining quantity: ' . $requirement->quantity . '. ';
         $message .= $log->offcut_id ? 'Off-cut(s) auto-generated.' : '';
+        if (!empty($validated['reused_offcut_id'])) {
+            $message .= ' Reused off-cut(s) deducted from inventory registry.';
+        }
 
         return redirect()->back()->with('success', $message);
     }
@@ -136,10 +150,28 @@ class RebarCuttingLogController extends Controller
      */
     public function destroy(RebarCuttingLog $cuttingLog)
     {
-        // If there's an associated offcut that is still 'Available', we should perhaps delete it or warn?
-        // For now, let's correct parameter name and just delete.
+        // Restore reused offcut if applicable
+        if ($cuttingLog->reused_offcut_id) {
+            $sourceOffcut = \App\Models\Offcut::find($cuttingLog->reused_offcut_id);
+            if ($sourceOffcut) {
+                $sourceOffcut->quantity += $cuttingLog->quantity_cut;
+                if ($sourceOffcut->status === 'Used' && $sourceOffcut->quantity > 0) {
+                    $sourceOffcut->status = 'Available';
+                }
+                $sourceOffcut->save();
+            }
+        }
+
+        // If there is an associated auto-generated offcut from this cutting activity, delete it or set status to Scrap
+        if ($cuttingLog->offcut_id) {
+            $generatedOffcut = \App\Models\Offcut::find($cuttingLog->offcut_id);
+            if ($generatedOffcut && $generatedOffcut->status === 'Available') {
+                $generatedOffcut->delete();
+            }
+        }
+
         $cuttingLog->delete();
-        return redirect()->back()->with('success', 'Cutting log deleted.');
+        return redirect()->back()->with('success', 'Cutting log deleted and inventory adjusted.');
     }
 }
 

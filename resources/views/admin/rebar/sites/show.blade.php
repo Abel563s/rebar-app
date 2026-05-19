@@ -375,6 +375,7 @@
                                                         class="text-xs font-bold text-slate-600 px-2 py-1 bg-slate-100 rounded-md">Ø{{ $offcut->bar_diameter }}mm</span>
                                                     <span class="text-xs font-black text-slate-900">{{ number_format($offcut->length, 2) }}m</span>
                                                     <span class="px-2 py-0.5 bg-cyan-50 text-cyan-600 rounded text-[9px] font-black border border-cyan-100">{{ number_format($offcut->weight_kg, 2) }}kg</span>
+                                                    <span class="px-2 py-0.5 bg-slate-50 text-slate-600 rounded text-[9px] font-black border border-slate-200">{{ $offcut->quantity }} pcs</span>
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 text-center">

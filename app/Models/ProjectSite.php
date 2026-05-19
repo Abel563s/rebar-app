@@ -13,6 +13,7 @@ class ProjectSite extends Model
         'location',
         'sector',
         'status',
+        'steel_grade',
         'notes',
         'amount_needed_08',
         'amount_needed_10',

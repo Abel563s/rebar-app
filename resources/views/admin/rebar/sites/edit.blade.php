@@ -47,6 +47,20 @@
                         @error('status') <p class="text-rose-500 text-xs mt-2 font-bold">{{ $message }}</p> @enderror
                     </div>
 
+                    <!-- Steel Grade -->
+                    <div class="col-span-2 md:col-span-1">
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Steel Grade
+                            <span class="text-rose-500">*</span></label>
+                        <select name="steel_grade" required
+                            class="w-full bg-slate-50 border-slate-200 rounded-2xl py-3.5 px-4 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-700">
+                            <option value="">-- Select Grade --</option>
+                            @foreach([300, 400, 500, 600] as $grade)
+                                <option value="{{ $grade }}" {{ old('steel_grade', $site->steel_grade) == $grade ? 'selected' : '' }}>Grade {{ $grade }}</option>
+                            @endforeach
+                        </select>
+                        @error('steel_grade') <p class="text-rose-500 text-xs mt-2 font-bold">{{ $message }}</p> @enderror
+                    </div>
+
                     <!-- Project Name -->
                     <div class="col-span-2 md:col-span-1">
                         <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Project
