@@ -39,10 +39,14 @@
                     $menu[] = ['label' => 'Project Sites', 'icon' => 'building-2', 'route' => 'admin.rebar.sites.index', 'active' => request()->routeIs('admin.rebar.sites.*')];
                     $menu[] = ['label' => 'Fabrication History', 'icon' => 'scissors', 'route' => 'admin.rebar.cutting-logs.index', 'active' => request()->routeIs('admin.rebar.cutting-logs.*')];
                     $menu[] = ['label' => 'Off-Cut Register', 'icon' => 'package-2', 'route' => 'admin.rebar.offcuts.index', 'active' => request()->routeIs('admin.rebar.offcuts.*')];
+                    $menu[] = ['label' => 'Approvals', 'icon' => 'check-square', 'route' => 'admin.rebar.approvals.index', 'active' => request()->routeIs('admin.rebar.approvals.*')];
                     $menu[] = ['label' => 'Reports', 'icon' => 'line-chart', 'route' => 'admin.rebar.reports', 'active' => request()->routeIs('admin.rebar.reports')];
                     $menu[] = ['label' => 'Roles', 'icon' => 'users-2', 'route' => 'admin.users.index', 'active' => request()->routeIs('admin.users.*')];
                 } else {
                     $menu[] = ['label' => 'Dashboard', 'icon' => 'layout-dashboard', 'route' => 'dashboard', 'active' => request()->routeIs('dashboard')];
+                }
+                if (Auth::user()->isManager()) {
+                    $menu[] = ['label' => 'Approvals', 'icon' => 'check-square', 'route' => 'admin.rebar.approvals.index', 'active' => request()->routeIs('admin.rebar.approvals.*')];
                 }
             }
         @endphp

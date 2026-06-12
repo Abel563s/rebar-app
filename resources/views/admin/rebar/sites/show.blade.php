@@ -15,6 +15,23 @@
             </div>
         </div>
 
+<script>
+    function toggleSteelEdit(enable) {
+        const view = document.getElementById('steel-analysis-view');
+        const edit = document.getElementById('steel-analysis-edit');
+        if (!view || !edit) return;
+        if (enable) {
+            view.classList.add('hidden');
+            edit.classList.remove('hidden');
+            // focus first input
+            const first = edit.querySelector('input'); if (first) first.focus();
+        } else {
+            edit.classList.add('hidden');
+            view.classList.remove('hidden');
+        }
+    }
+</script>
+
         <!-- Site Header Hub -->
         <div
             class="bg-gradient-to-br from-white via-white to-cyan-50/30 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-200/60 overflow-hidden relative">
@@ -43,6 +60,9 @@
                                 {{ $site->site_name }}
                             </h1>
                             <p class="text-xl font-bold text-slate-400 mt-1">{{ $site->project_name }}</p>
+                            @if($site->manager)
+                                <p class="text-sm text-slate-500 mt-1">Manager: <span class="font-bold text-slate-700">{{ $site->manager->name }}</span></p>
+                            @endif
                         </div>
                         <div class="flex flex-wrap gap-6 pt-2">
                             <div class="flex items-center gap-2 text-slate-500">
@@ -137,13 +157,87 @@
                             <i data-lucide="bar-chart-3" class="w-6 h-6 text-cyan-400"></i>
                         </div>
                         <div>
-                            <h3 class="text-xl font-black text-slate-900 tracking-tight">Steel Requirement Analysis</h3>
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-xl font-black text-slate-900 tracking-tight">Steel Requirement Analysis</h3>
+                                <button id="steel-edit-btn" type="button" onclick="toggleSteelEdit(true)" class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-all" title="Edit plan">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </button>
+                            </div>
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Comparison of Plan vs. Actual Fabrication</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                <div id="steel-analysis-view">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                        @foreach(['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'] as $d)
+                            @php
+                                $diameter = (int)$d;
+                                $needed = (int)($site->{'amount_needed_'.$d} ?? 0);
+                                $usage = $usageByDiameter[$diameter] ?? null;
+                                $actual = $usage->total_pieces ?? 0;
+                                $actualWeight = $usage->total_weight ?? 0;
+                                $diff = $needed - $actual;
+                                $statusColor = $diff > 0 ? 'text-amber-500' : ($diff < 0 ? 'text-rose-500' : 'text-emerald-500');
+                                $bgColor = $diff > 0 ? 'bg-amber-50/30' : ($diff < 0 ? 'bg-rose-50/30' : 'bg-emerald-50/30');
+                                $borderColor = $diff > 0 ? 'border-amber-100' : ($diff < 0 ? 'border-rose-100' : 'border-emerald-100');
+                            @endphp
+                            <div class="p-6 rounded-3xl border {{ $borderColor }} {{ $bgColor }} transition-all hover:shadow-lg group">
+                                <div class="flex items-center justify-between mb-5">
+                                    <span class="px-4 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-900 shadow-sm group-hover:border-cyan-200 group-hover:text-cyan-600 transition-all font-mono tracking-tighter">Ø{{ $d }}mm</span>
+                                    @if($actual > 0)
+                                        <div class="flex items-center gap-1.5 px-2 py-1 bg-white border border-emerald-100 rounded-lg shadow-sm">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                            <span class="text-[8px] font-black text-emerald-600 uppercase tracking-tighter">FABRICATED</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-end">
+                                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Plan (Needed)</span>
+                                        <span class="text-[11px] font-black text-slate-800">{{ number_format($needed) }} PCS</span>
+                                    </div>
+                                    <div class="flex justify-between items-end">
+                                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Actual (Used)</span>
+                                        <span class="text-[11px] font-black text-cyan-600">{{ number_format($actual) }} PCS</span>
+                                    </div>
+                                    <div class="flex justify-between items-end">
+                                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Total Weight</span>
+                                        <span class="text-[11px] font-black text-slate-600">{{ number_format($actualWeight, 1) }} kg</span>
+                                    </div>
+                                    <div class="h-px bg-slate-200/50 my-2"></div>
+                                    <div class="flex justify-between items-end">
+                                        <span class="text-[8px] font-black {{ $statusColor }} uppercase tracking-widest">Difference</span>
+                                        <div class="flex flex-col items-end">
+                                            <span class="text-sm font-black {{ $statusColor }}">{{ number_format($diff) }} PCS</span>
+                                            <span class="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">{{ number_format($actual) }} Pieces Recorded</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <form id="steel-analysis-edit" class="hidden" method="POST" action="{{ route('admin.rebar.sites.update', $site) }}">
+                    @csrf
+                    @method('PATCH')
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                        @foreach(['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'] as $d)
+                            @php $val = old('amount_needed_'.$d, $site->{'amount_needed_'.$d} ?? 0); @endphp
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50">
+                                <label class="block text-xs font-black text-slate-600 mb-2">Ø{{ $d }}mm Plan</label>
+                                <input name="amount_needed_{{ $d }}" type="number" min="0" step="1" value="{{ $val }}" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm font-bold" />
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-6 flex items-center gap-3">
+                        <button type="submit" class="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black shadow hover:scale-105 transition-all">Save</button>
+                        <button type="button" onclick="toggleSteelEdit(false)" class="px-6 py-3 bg-slate-100 text-slate-700 rounded-2xl font-bold border border-slate-200">Cancel</button>
+                    </div>
+                </form>
                     @foreach(['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'] as $d)
                         @php
                             $diameter = (int)$d;

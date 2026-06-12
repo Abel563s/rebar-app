@@ -1,5 +1,12 @@
 <x-app-layout>
     <div class="py-6 space-y-8 max-w-7xl mx-auto">
+        <style>
+            /* Standardize premium cards for dashboard: white background, readable text */
+            .premium-card { background: #ffffff; border: 1px solid rgba(15,23,42,0.06); border-radius: 1.5rem; box-shadow: 0 6px 20px rgba(15,23,42,0.04); color: #0f172a; }
+            .premium-card h3, .premium-card h2, .premium-card h4, .premium-card p { color: inherit; }
+            /* Ensure dark-themed cards keep their white text */
+            .premium-card.bg-dark, .premium-card.bg-slate-900 { color: #fff; }
+        </style>
         <!-- Premium Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="space-y-1">
@@ -81,37 +88,52 @@
 
             <!-- Management Fast-Track -->
             <div class="lg:col-span-4 space-y-6">
-                <div class="premium-card p-8 bg-slate-900 text-white relative overflow-hidden group border-none">
-                    <div class="absolute -top-20 -right-20 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl"></div>
+                <div class="premium-card p-6 relative overflow-hidden group border-none">
+                    <div class="absolute -top-6 -right-6 w-36 h-36 bg-cyan-50 rounded-full blur-3xl"></div>
                     <div class="relative z-10">
-                        <h3 class="text-lg font-black tracking-tight mb-2">Requirement Engine</h3>
-                        <p class="text-xs font-medium text-slate-400 mb-6">Manage high-precision rebar requirements
-                            across active project sites.</p>
+                        <h3 class="text-lg font-black tracking-tight mb-2 text-slate-900">Requirement Engine</h3>
+                        <p class="text-xs font-medium text-slate-500 mb-4">Manage high-precision rebar requirements across active project sites with quick creation and templating.</p>
 
-                        <a href="{{ route('admin.rebar.requirements.create') }}"
-                            class="w-full py-4 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 group/btn active:scale-95">
-                            <span class="text-sm font-black uppercase tracking-widest">New Protocol</span>
-                            <i data-lucide="plus-circle"
-                                class="w-4 h-4 transition-transform group-hover/btn:scale-110"></i>
+                        <div class="grid grid-cols-1 gap-3">
+                            <a href="{{ route('admin.rebar.requirements.create') }}" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-3 transition-all">
+                                <span>New Protocol</span>
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            </a>
+
+                            <a href="{{ route('admin.rebar.requirements.index') }}" class="w-full py-3 bg-white border border-slate-100 text-slate-900 rounded-2xl font-bold text-sm uppercase tracking-widest shadow-sm flex items-center justify-center gap-3 transition-all">
+                                <span>Browse Requirements</span>
+                                <i data-lucide="list" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-card p-6 bg-gradient-to-br from-[#00ADC5] to-[#007A8A] text-white relative overflow-hidden group border-none">
+                    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-black/10 rounded-full blur-2xl"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-lg font-black tracking-tight mb-2">Fabrication Pulse</h3>
+                        <p class="text-xs font-medium text-cyan-50 mb-4">Monitor fabrication logs, wastage ratios, and reusable off-cut inventory.</p>
+
+                        <a href="{{ route('admin.rebar.cutting-logs.create') }}" class="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300">
+                            <span class="text-sm font-black uppercase tracking-widest">Log Cut</span>
+                            <i data-lucide="scissors" class="w-4 h-4"></i>
                         </a>
                     </div>
                 </div>
 
-                <div
-                    class="premium-card p-8 bg-gradient-to-br from-[#00ADC5] to-[#007A8A] text-white relative overflow-hidden group border-none">
-                    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-                    <div class="relative z-10">
-                        <h3 class="text-lg font-black tracking-tight mb-2">Fabrication Pulse</h3>
-                        <p class="text-xs font-medium text-cyan-50 mb-6">Monitor fabrication logs, wastage ratios, and
-                            reusable off-cut inventory.</p>
-
-                        <a href="{{ route('admin.rebar.cutting-logs.create') }}"
-                            class="w-full py-4 bg-black/20 hover:bg-black/30 border border-white/10 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 group/btn active:scale-95">
-                            <span class="text-sm font-black uppercase tracking-widest">Log Cut</span>
-                            <i data-lucide="scissors"
-                                class="w-4 h-4 transition-transform group-hover/btn:rotate-12"></i>
-                        </a>
-                    </div>
+                <div class="premium-card p-6 relative overflow-hidden">
+                    <h3 class="text-md font-black text-slate-900 mb-3">Recent Activity</h3>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        @foreach(\App\Models\RebarCuttingLog::latest()->take(5)->get() as $log)
+                            <li class="flex items-start justify-between">
+                                <div>
+                                    <p class="font-bold text-slate-800">{{ $log->user->name ?? 'System' }}</p>
+                                    <p class="text-[12px] text-slate-500">Logged cut for {{ $log->offcut->offcut_code ?? '—' }} • {{ $log->created_at->diffForHumans() }}</p>
+                                </div>
+                                <div class="text-xs text-slate-400">{{ number_format($log->length,1) }}m</div>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
         </div>

@@ -58,13 +58,13 @@
         .premium-card {
             background: #ffffff;
             border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e5e7eb;
             transition: all 0.25s ease;
         }
 
         .premium-card:hover {
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 25px rgba(0,81,95,0.12);
             transform: translateY(-2px);
         }
 
@@ -101,18 +101,7 @@
         }
 
         /* Executive Shadows & Depth */
-        .premium-card {
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(241, 245, 249, 0.8);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .premium-card:hover {
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-            transform: translateY(-6px);
-        }
+        /* kept intentionally similar but aligned to brand accent */
 
         /* Typography Weights */
         .text-title {
@@ -130,7 +119,7 @@
     </style>
 </head>
 
-<body class="bg-[#f7fbfc] text-slate-900 antialiased h-full font-inter">
+<body style="background: linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);" class="text-slate-900 antialiased h-full font-inter">
 
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->

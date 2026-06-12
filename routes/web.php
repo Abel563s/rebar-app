@@ -61,6 +61,13 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+    // Approvals: accessible to admins and managers
+    Route::middleware(['auth','role:admin|manager'])->prefix('admin/rebar')->name('admin.rebar.')->group(function () {
+        Route::resource('approvals', \App\Http\Controllers\ApprovalController::class);
+        Route::patch('approvals/{approval}/approve', [\App\Http\Controllers\ApprovalController::class, 'approve'])->name('approvals.approve');
+        Route::patch('approvals/{approval}/reject', [\App\Http\Controllers\ApprovalController::class, 'reject'])->name('approvals.reject');
+    });
+
 
 
     // Notification Routes

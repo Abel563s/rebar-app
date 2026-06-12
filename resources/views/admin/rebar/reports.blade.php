@@ -1,5 +1,24 @@
 <x-app-layout>
     <div class="py-6 space-y-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <style>
+            .responsive-cards-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                gap: 24px;
+            }
+
+            .timeline-card {
+                border-left: 4px solid #00515f;
+                transition: background .18s ease;
+            }
+
+            .timeline-card:hover {
+                background: #f8fafc;
+            }
+
+            /* Ensure premium cards have consistent spacing */
+            .premium-card { margin-bottom: 24px; }
+        </style>
         <!-- Premium Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="space-y-1">
@@ -22,7 +41,7 @@
         </div>
 
         <!-- Global Performance Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="responsive-cards-grid mb-8">
             <!-- Card 1: Global Load -->
             <div class="premium-card p-6 overflow-hidden relative group bg-white rounded-3xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-cyan-50 rounded-full blur-2xl group-hover:bg-cyan-100 transition-colors"></div>
@@ -96,34 +115,47 @@
             </div>
         </div>
 
-        <!-- Inventory Off-cuts Summary Strip -->
-        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-3xl p-6 shadow-lg shadow-emerald-600/10 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_120%,rgba(255,255,255,0.12),transparent)] opacity-80"></div>
-            <div class="relative z-10 space-y-2">
-                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-100 bg-emerald-800/40 px-3 py-1 rounded-full border border-emerald-500/20">Active Off-Cut Reserve</span>
-                <h3 class="text-2xl font-black tracking-tight font-outfit">Recycled Material Asset Registry</h3>
-                <p class="text-xs text-emerald-50 font-medium">Currently holding reusable metal resource assets across multiple yards.</p>
-            </div>
-            <div class="relative z-10 flex items-center gap-8 bg-emerald-800/20 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
-                <div class="text-center">
-                    <p class="text-[9px] font-black text-emerald-200 uppercase tracking-widest">Available Count</p>
-                    <p class="text-2xl font-black">{{ number_format($global['total_avail_count']) }} <span class="text-xs font-bold text-emerald-100">pcs</span></p>
+        <!-- Inventory Off-cuts Summary Card -->
+        <div class="premium-card p-6 mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                    <span class="inline-block text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full" style="background: rgba(0,81,95,0.1); color: #00515f;">Active Off-Cut Reserve</span>
+                    <h3 class="text-2xl font-black tracking-tight font-outfit mt-3" style="color:#0f172a; font-weight:700;">Recycled Material Asset Registry</h3>
+                    <p class="text-xs mt-1" style="color:#64748b;">Currently holding reusable metal resource assets across multiple yards.</p>
                 </div>
-                <div class="w-px h-10 bg-white/20"></div>
-                <div class="text-center">
-                    <p class="text-[9px] font-black text-emerald-200 uppercase tracking-widest">Total Length</p>
-                    <p class="text-2xl font-black">{{ number_format($global['total_avail_length'], 1) }} <span class="text-xs font-bold text-emerald-100">m</span></p>
-                </div>
-                <div class="w-px h-10 bg-white/20"></div>
-                <div class="text-center">
-                    <p class="text-[9px] font-black text-emerald-200 uppercase tracking-widest">Asset Weight</p>
-                    <p class="text-2xl font-black">{{ number_format($global['total_avail_weight'], 1) }} <span class="text-xs font-bold text-emerald-100">kg</span></p>
+
+                <div class="flex items-center gap-8 rounded-2xl p-4" style="border:1px solid #e5e7eb;">
+                    <div class="text-center">
+                        <p class="text-[9px] font-black uppercase tracking-widest" style="color:#64748b;">Available Count</p>
+                        <p class="text-2xl font-black text-slate-900">{{ number_format($global['total_avail_count']) }} <span class="text-xs font-bold text-slate-500">pcs</span></p>
+                    </div>
+                    <div class="w-px h-10 bg-slate-200"></div>
+                    <div class="text-center">
+                        <p class="text-[9px] font-black uppercase tracking-widest" style="color:#64748b;">Total Length</p>
+                        <p class="text-2xl font-black text-slate-900">{{ number_format($global['total_avail_length'], 1) }} <span class="text-xs font-bold text-slate-500">m</span></p>
+                    </div>
+                    <div class="w-px h-10 bg-slate-200"></div>
+                    <div class="text-center">
+                        <p class="text-[9px] font-black uppercase tracking-widest" style="color:#64748b;">Asset Weight</p>
+                        <p class="text-2xl font-black text-slate-900">{{ number_format($global['total_avail_weight'], 1) }} <span class="text-xs font-bold text-slate-500">kg</span></p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Analytics Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <style>
+            /* Stack major analytics sections vertically for readability */
+            .analytics-layout { display: grid; gap:24px; grid-template-columns: 1fr; }
+
+            /* The left column previously forced multi-column layouts; keep its children full-width */
+            .analytics-left { display: block; }
+            .analytics-left > .premium-card { width:100%; display:block; }
+            .analytics-right { display:block; }
+        </style>
+
+        <div class="analytics-layout mb-8">
+            <div class="analytics-left">
             <!-- 1. Site Node Performance -->
             <div class="lg:col-span-12 premium-card p-0 overflow-hidden shadow-xl shadow-slate-200/50 border border-slate-100 bg-white rounded-3xl">
                 <div class="p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -136,7 +168,7 @@
                         <span class="text-[9px] font-black uppercase tracking-widest">Live Syncing</span>
                     </div>
                 </div>
-                <div class="overflow-x-auto">
+                <div>
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-50/50">
@@ -227,7 +259,7 @@
             </div>
 
             <!-- 2. Steel Grade Analysis (Enhanced Multi-dimensional Card) -->
-            <div class="lg:col-span-6 premium-card bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-3xl p-8">
+            <div class="lg:col-span-12 premium-card bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-3xl p-8">
                 <div class="mb-8">
                     <span class="text-[9px] font-black uppercase text-cyan-600 bg-cyan-50 border border-cyan-100 px-2.5 py-1 rounded-md">Strength distribution</span>
                     <h3 class="text-xl font-black text-slate-900 tracking-tight font-outfit mt-3">Fabrication by Steel Grade</h3>
@@ -266,8 +298,37 @@
                 </div>
             </div>
 
-            <!-- 3. Bar Diameter Distribution Analysis -->
-            <div class="lg:col-span-6 premium-card bg-slate-900 border-none relative overflow-hidden shadow-2xl shadow-slate-950/20 rounded-3xl p-8 text-white">
+            <!-- 3. Monthly Fabrication Trend -->
+            <div class="lg:col-span-12 premium-card bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-3xl p-8">
+                <div class="mb-8">
+                    <span class="text-[9px] font-black uppercase text-blue-600 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-md">Timeline Pulse</span>
+                    <h3 class="text-xl font-black tracking-tight font-outfit mt-3" style="color:#0f172a; font-weight:700;">Monthly Output Flow</h3>
+                    <p class="text-xs font-bold uppercase tracking-widest mt-1 italic" style="color:#64748b;">Fabricated length and structural mass flow over the last 12 months</p>
+                </div>
+
+                <div class="space-y-4">
+                    @foreach($monthlyTrend as $trend)
+                        <div class="flex items-center justify-between timeline-card bg-slate-50/50 border border-slate-100 rounded-2xl p-4 transition-colors">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-black text-slate-800 font-outfit">{{ $trend->month }}</h4>
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase mt-0.5">Average output weight: {{ number_format($trend->total_weight, 1) }} kg</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-sm font-black text-blue-600 font-outfit">{{ number_format($trend->total_length, 1) }} m</span>
+                                <span class="text-[9px] font-black text-slate-400 uppercase block tracking-wider mt-0.5">Processed</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- 4. Bar Diameter Distribution Analysis -->
+            <div class="lg:col-span-12 premium-card bg-slate-900 border-none relative overflow-hidden shadow-2xl shadow-slate-950/20 rounded-3xl p-8 text-white">
                 <div class="absolute -top-32 -right-32 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px]"></div>
                 <div class="relative z-10 flex flex-col h-full">
                     <div class="mb-8">
@@ -313,37 +374,10 @@
                 </div>
             </div>
 
-            <!-- 4. Monthly Fabrication Trend (Historical Pulse) -->
-            <div class="lg:col-span-8 premium-card bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-3xl p-8 font-inter">
-                <div class="mb-8">
-                    <span class="text-[9px] font-black uppercase text-blue-600 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-md">Timeline Pulse</span>
-                    <h3 class="text-xl font-black text-slate-900 tracking-tight font-outfit mt-3">Monthly Output Flow</h3>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1 italic">Fabricated length and structural mass flow over the last 12 months</p>
-                </div>
-
-                <div class="space-y-4">
-                    @foreach($monthlyTrend as $trend)
-                        <div class="flex items-center justify-between bg-slate-50/50 border border-slate-100 rounded-2xl p-4 hover:bg-slate-50 transition-colors">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <i data-lucide="calendar" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-black text-slate-800 font-outfit">{{ $trend->month }}</h4>
-                                    <p class="text-[9px] font-bold text-slate-400 uppercase mt-0.5">Average output weight: {{ number_format($trend->total_weight, 1) }} kg</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-sm font-black text-blue-600 font-outfit">{{ number_format($trend->total_length, 1) }} m</span>
-                                <span class="text-[9px] font-black text-slate-400 uppercase block tracking-wider mt-0.5">Processed</span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+            
 
             <!-- 5. Recent Operational Highlights -->
-            <div class="lg:col-span-4 premium-card bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-3xl p-8 font-inter">
+            <div class="premium-card bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-3xl p-8 font-inter">
                 <div class="mb-8">
                     <span class="text-[9px] font-black uppercase text-amber-600 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-md">Site Activities</span>
                     <h3 class="text-xl font-black text-slate-900 tracking-tight font-outfit mt-3">Operational Stream</h3>
@@ -396,6 +430,10 @@
                     </ul>
                 </div>
             </div>
+
+            </div>
+
+            
         </div>
     </div>
 </x-app-layout>

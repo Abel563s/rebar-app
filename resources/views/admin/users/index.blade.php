@@ -21,7 +21,7 @@
                     <div class="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
                         <i data-lucide="plus" class="w-4 h-4"></i>
                     </div>
-                    Create Identity Node
+                    Create User
                 </button>
             </div>
 
@@ -181,7 +181,7 @@
                                 <i data-lucide="user-plus" class="w-7 h-7"></i>
                             </div>
                             <div>
-                                <h3 class="text-2xl font-black text-slate-900 tracking-tight font-outfit">Initialize Identity</h3>
+                                <h3 class="text-2xl font-black text-slate-900 tracking-tight font-outfit">Create New User</h3>
                                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Deployment Protocol v2.4</p>
                             </div>
                         </div>
@@ -209,22 +209,22 @@
 
                             <!-- Role -->
                             <div class="space-y-3">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Access Tier</label>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Role</label>
                                 <select name="role" required
                                     class="w-full px-6 py-4 bg-white border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 focus:border-[#00ADC5] focus:ring-4 focus:ring-[#00ADC5]/10 transition-all outline-none appearance-none cursor-pointer">
-                                    <option value="user">Standard User (Level 1)</option>
-                                    <option value="manager">Lead Manager (Level 2)</option>
-                                    <option value="admin">Root Admin (Level 3)</option>
+                                    <option value="user">User</option>
+                                    <option value="manager">Manager</option>
+                                    <option value="admin">Admin(Level 3)</option>
                                 </select>
                             </div>
 
                             <!-- Status -->
                             <div class="space-y-3">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Initialization State</label>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Status</label>
                                 <select name="is_active" required
                                     class="w-full px-6 py-4 bg-white border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 focus:border-[#00ADC5] focus:ring-4 focus:ring-[#00ADC5]/10 transition-all outline-none appearance-none cursor-pointer">
-                                    <option value="1">Active / Operational</option>
-                                    <option value="0">Decommissioned / Static</option>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
                                 </select>
                             </div>
 
@@ -237,7 +237,7 @@
 
                             <!-- Confirm -->
                             <div class="space-y-3">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Identity Confirmation</label>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Confirm Password</label>
                                 <input type="password" name="password_confirmation" required placeholder="Re-enter security key"
                                     class="w-full px-6 py-4 bg-white border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 placeholder-slate-300 focus:border-[#00ADC5] focus:ring-4 focus:ring-[#00ADC5]/10 transition-all outline-none">
                             </div>
@@ -246,11 +246,11 @@
                         <div class="pt-10 flex flex-col sm:flex-row gap-4">
                             <button type="button" @click="createModal = false" 
                                     class="flex-1 py-4 bg-slate-100 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-slate-200 transition-all">
-                                Abort Mission
+                                Cancel
                             </button>
                             <button type="submit" 
                                     class="flex-[2] py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-slate-200 hover:bg-[#00ADC5] hover:shadow-[#00ADC5]/20 transition-all active:scale-95">
-                                Deploy Identity Node
+                                Create
                             </button>
                         </div>
                     </form>

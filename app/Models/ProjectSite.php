@@ -14,6 +14,7 @@ class ProjectSite extends Model
         'sector',
         'status',
         'steel_grade',
+        'manager_id',
         'notes',
         'amount_needed_08',
         'amount_needed_10',
@@ -43,6 +44,11 @@ class ProjectSite extends Model
     public function requirements()
     {
         return $this->hasMany(RebarRequirement::class, 'site_id');
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'manager_id');
     }
 
     public function offcuts()

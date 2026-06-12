@@ -127,6 +127,14 @@
 
                     <!-- Notes -->
                     <div class="col-span-2">
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Site Manager (Assign)</label>
+                        <select name="manager_id" class="w-full bg-slate-50 border-slate-200 rounded-2xl py-3.5 px-4 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-700 mb-4">
+                            <option value="">-- No Manager --</option>
+                            @foreach(\App\Models\User::where('role','manager')->get() as $m)
+                                <option value="{{ $m->id }}" {{ old('manager_id', $site->manager_id) == $m->id ? 'selected' : '' }}>{{ $m->name }} ({{ $m->email }})</option>
+                            @endforeach
+                        </select>
+                        
                         <label
                             class="block text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Notes</label>
                         <textarea name="notes" rows="4" placeholder="Additional details about the site..."
