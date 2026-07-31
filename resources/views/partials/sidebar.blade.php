@@ -27,25 +27,45 @@
     <nav class="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar relative z-10 font-inter">
         @php
             $menu = [];
+            $user = Auth::user();
+            $isRebarSection = $user && request()->routeIs('admin.rebar.*');
 
-            if (Auth::check()) {
-                if (Auth::user()->isAdmin()) {
+            if ($user) {
+                if ($user->isAdmin()) {
                     $menu[] = ['label' => 'Dashboard', 'icon' => 'layout-dashboard', 'route' => 'admin.dashboard', 'active' => request()->routeIs('admin.dashboard')];
+                } elseif ($user->hasRebarAccess()) {
+                    $menu[] = ['label' => 'Dashboard', 'icon' => 'layout-dashboard', 'route' => 'admin.rebar.dashboard', 'active' => request()->routeIs('admin.rebar.dashboard')];
                 } else {
                     $menu[] = ['label' => 'Dashboard', 'icon' => 'layout-dashboard', 'route' => 'dashboard', 'active' => request()->routeIs('dashboard')];
                 }
 
-                if (Auth::user()->isAdmin()) {
+                if ($user->isAdmin()) {
                     $menu[] = ['label' => 'Project Sites', 'icon' => 'building-2', 'route' => 'admin.rebar.sites.index', 'active' => request()->routeIs('admin.rebar.sites.*')];
                     $menu[] = ['label' => 'Fabrication History', 'icon' => 'scissors', 'route' => 'admin.rebar.cutting-logs.index', 'active' => request()->routeIs('admin.rebar.cutting-logs.*')];
                     $menu[] = ['label' => 'Off-Cut Register', 'icon' => 'package-2', 'route' => 'admin.rebar.offcuts.index', 'active' => request()->routeIs('admin.rebar.offcuts.*')];
                     $menu[] = ['label' => 'Approvals', 'icon' => 'check-square', 'route' => 'admin.rebar.approvals.index', 'active' => request()->routeIs('admin.rebar.approvals.*')];
                     $menu[] = ['label' => 'Reports', 'icon' => 'line-chart', 'route' => 'admin.rebar.reports', 'active' => request()->routeIs('admin.rebar.reports')];
                     $menu[] = ['label' => 'Roles', 'icon' => 'users-2', 'route' => 'admin.users.index', 'active' => request()->routeIs('admin.users.*')];
-                } else {
-                    $menu[] = ['label' => 'Dashboard', 'icon' => 'layout-dashboard', 'route' => 'dashboard', 'active' => request()->routeIs('dashboard')];
+                } elseif ($user->hasRebarAccess()) {
+                    if ($user->isSiteEngineer() || $user->isApprovalOfficer() || $user->isCostControl() || $user->isStoreKeeper()) {
+                        $menu[] = ['label' => 'Project Sites', 'icon' => 'building-2', 'route' => 'admin.rebar.sites.index', 'active' => request()->routeIs('admin.rebar.sites.*')];
+                    }
+
+                    if ($user->isSiteEngineer() || $user->isApprovalOfficer() || $user->isCostControl() || $user->isQuantitySurveyor() || $user->isStoreKeeper()) {
+                        $menu[] = ['label' => 'Fabrication History', 'icon' => 'scissors', 'route' => 'admin.rebar.cutting-logs.index', 'active' => request()->routeIs('admin.rebar.cutting-logs.*')];
+                        $menu[] = ['label' => 'Off-Cut Register', 'icon' => 'package-2', 'route' => 'admin.rebar.offcuts.index', 'active' => request()->routeIs('admin.rebar.offcuts.*')];
+                    }
+
+                    if ($user->isApprovalOfficer() || $user->isManager() || $user->isCostControl() || $user->isStoreKeeper()) {
+                        $menu[] = ['label' => 'Approvals', 'icon' => 'check-square', 'route' => 'admin.rebar.approvals.index', 'active' => request()->routeIs('admin.rebar.approvals.*')];
+                    }
+
+                    if ($user->isApprovalOfficer() || $user->isCostControl() || $user->isQuantitySurveyor() || $user->isStoreKeeper()) {
+                        $menu[] = ['label' => 'Reports', 'icon' => 'line-chart', 'route' => 'admin.rebar.reports', 'active' => request()->routeIs('admin.rebar.reports')];
+                    }
                 }
-                if (Auth::user()->isManager()) {
+
+                if ($user->isManager() && !$user->isAdmin()) {
                     $menu[] = ['label' => 'Approvals', 'icon' => 'check-square', 'route' => 'admin.rebar.approvals.index', 'active' => request()->routeIs('admin.rebar.approvals.*')];
                 }
             }

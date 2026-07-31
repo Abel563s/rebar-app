@@ -105,4 +105,23 @@ class RebarService
         $threshold = $thresholds[$diameter] ?? 0.3; // Default 0.3m if not specified
         return $lengthMt < $threshold;
     }
+
+    public function recalculateSiteAmounts($siteId): void
+    {
+        $site = \App\Models\ProjectSite::find($siteId);
+        if (!$site) return;
+
+        $totals = \App\Models\RebarRequirement::where('site_id', $siteId)
+            ->selectRaw('bar_diameter, SUM(quantity) as total_qty')
+            ->groupBy('bar_diameter')
+            ->get()
+            ->keyBy('bar_diameter');
+
+        $diameters = ['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'];
+        foreach ($diameters as $d) {
+            $site->{'amount_needed_' . $d} = $totals[$d]->total_qty ?? 0;
+        }
+
+        $site->save();
+    }
 }

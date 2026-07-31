@@ -38,6 +38,9 @@ class ProjectSite extends Model
                 $number = $latest ? ((int) str_replace('PS-', '', $latest->site_code)) + 1 : 1;
                 $model->site_code = 'PS-' . str_pad($number, 4, '0', STR_PAD_LEFT);
             }
+            if (empty($model->user_id) && auth()->check()) {
+                $model->user_id = auth()->id();
+            }
         });
     }
 

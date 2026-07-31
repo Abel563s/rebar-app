@@ -70,6 +70,30 @@ class RoleMiddleware
                     if ($user->isDepartmentAttendanceUser())
                         return true;
                     break;
+                case 'site_engineer':
+                    if ($user->isSiteEngineer())
+                        return true;
+                    break;
+                case 'approval_officer':
+                    if ($user->isApprovalOfficer())
+                        return true;
+                    break;
+                case 'cost_control':
+                    if ($user->isCostControl())
+                        return true;
+                    break;
+                case 'quantity_surveyor':
+                    if ($user->isQuantitySurveyor())
+                        return true;
+                    break;
+                case 'store_keeper':
+                    if ($user->isStoreKeeper())
+                        return true;
+                    break;
+                case 'rebar':
+                    if ($user->hasRebarAccess())
+                        return true;
+                    break;
             }
         }
 

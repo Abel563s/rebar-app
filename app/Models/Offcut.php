@@ -19,6 +19,9 @@ class Offcut extends Model
                 $service = app(\App\Services\RebarService::class);
                 $model->offcut_code = $service->generateOffcutId();
             }
+            if (empty($model->user_id) && auth()->check()) {
+                $model->user_id = auth()->id();
+            }
         });
     }
 

@@ -10,46 +10,22 @@ class ProjectSiteController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        if ($user->isQuantitySurveyor()) {
+            abort(403);
+        }
+
         $sites = ProjectSite::latest()->paginate(12);
         return view('admin.rebar.sites.index', compact('sites'));
     }
 
-    public function create()
-    {
-        return view('admin.rebar.sites.create');
-    }
-
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'project_name' => 'required|string|max:255',
-            'site_name' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
-            'sector' => 'nullable|string|max:255',
-            'status' => 'required|in:Active,Completed',
-            'steel_grade' => 'required|string|in:300,400,500,600',
-            'notes' => 'nullable|string',
-            'manager_id' => 'nullable|exists:users,id',
-            'amount_needed_08' => 'nullable|numeric|min:0',
-            'amount_needed_10' => 'nullable|numeric|min:0',
-            'amount_needed_12' => 'nullable|numeric|min:0',
-            'amount_needed_14' => 'nullable|numeric|min:0',
-            'amount_needed_16' => 'nullable|numeric|min:0',
-            'amount_needed_18' => 'nullable|numeric|min:0',
-            'amount_needed_20' => 'nullable|numeric|min:0',
-            'amount_needed_24' => 'nullable|numeric|min:0',
-            'amount_needed_28' => 'nullable|numeric|min:0',
-            'amount_needed_32' => 'nullable|numeric|min:0',
-        ]);
-
-        ProjectSite::create($validated);
-
-        return redirect()->route('admin.rebar.sites.index')
-            ->with('success', 'Project site created successfully.');
-    }
-
     public function show(ProjectSite $site)
     {
+        $user = auth()->user();
+        if ($user->isQuantitySurveyor()) {
+            abort(403);
+        }
+
         $requirements = $site->requirements()->latest()->paginate(10);
         $offcuts = $site->offcuts()->latest()->get();
 
@@ -74,13 +50,72 @@ class ProjectSiteController extends Controller
         return view('admin.rebar.sites.show', compact('site', 'requirements', 'offcuts', 'totalLength', 'totalBars', 'tonnage', 'usageByDiameter', 'totalPcsNeeded', 'totalKgCut'));
     }
 
+    public function create()
+    {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
+        return view('admin.rebar.sites.create');
+    }
+
+    public function store(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'project_name' => 'required|string|max:255',
+            'site_name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'sector' => 'nullable|string|max:255',
+            'status' => 'required|in:Active,Completed',
+            'steel_grade' => 'required|string|in:300,400,500,600',
+            'notes' => 'nullable|string',
+            'manager_id' => 'nullable|exists:users,id',
+            'amount_needed_08' => 'nullable|numeric|min:0',
+            'amount_needed_10' => 'nullable|numeric|min:0',
+            'amount_needed_12' => 'nullable|numeric|min:0',
+            'amount_needed_14' => 'nullable|numeric|min:0',
+            'amount_needed_16' => 'nullable|numeric|min:0',
+            'amount_needed_18' => 'nullable|numeric|min:0',
+            'amount_needed_20' => 'nullable|numeric|min:0',
+            'amount_needed_24' => 'nullable|numeric|min:0',
+            'amount_needed_28' => 'nullable|numeric|min:0',
+            'amount_needed_32' => 'nullable|numeric|min:0',
+        ]);
+
+        $validated['user_id'] = auth()->id();
+        ProjectSite::create($validated);
+
+        return redirect()->route('admin.rebar.sites.index')
+            ->with('success', 'Project site created successfully.');
+    }
+
     public function edit(ProjectSite $site)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
+        if (!$user->isAdmin() && $site->user_id !== $user->id) {
+            abort(403);
+        }
         return view('admin.rebar.sites.edit', compact('site'));
     }
 
     public function update(Request $request, ProjectSite $site)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
+        if (!$user->isAdmin() && $site->user_id !== $user->id) {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'project_name' => 'required|string|max:255',
             'site_name' => 'required|string|max:255',
@@ -110,6 +145,14 @@ class ProjectSiteController extends Controller
 
     public function destroy(ProjectSite $site)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
+        if (!$user->isAdmin() && $site->user_id !== $user->id) {
+            abort(403);
+        }
+
         $site->delete();
         return redirect()->route('admin.rebar.sites.index')
             ->with('success', 'Project site deleted successfully.');

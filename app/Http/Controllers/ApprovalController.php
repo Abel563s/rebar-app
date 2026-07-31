@@ -13,16 +13,18 @@ class ApprovalController extends Controller
     public function index()
     {
         $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isManager() && !$user->isApprovalOfficer() && !$user->isStoreKeeper() && !$user->isCostControl()) {
+            abort(403);
+        }
         if ($user->isAdmin()) {
             $approvals = Approval::with(['site','offcut','requester','approver'])->latest()->paginate(20);
-        } elseif ($user->isManager()) {
-            // show approvals where approver is this manager or requested_by is this manager
+        } elseif ($user->isManager() || $user->isApprovalOfficer()) {
             $approvals = Approval::with(['site','offcut','requester','approver'])
                 ->where(function($q) use ($user) {
                     $q->where('approver_id', $user->id)->orWhere('requested_by', $user->id);
                 })->latest()->paginate(20);
         } else {
-            abort(403);
+            $approvals = Approval::with(['site','offcut','requester','approver'])->latest()->paginate(20);
         }
 
         // Provide available offcuts to the index page (used by the inline modal)
@@ -37,6 +39,10 @@ class ApprovalController extends Controller
 
     public function create()
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isManager()) {
+            abort(403);
+        }
         $sites = ProjectSite::all();
         if (method_exists(Offcut::class, 'available')) {
             $offcuts = Offcut::available()->get();
@@ -49,6 +55,11 @@ class ApprovalController extends Controller
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isManager()) {
+            abort(403);
+        }
+
         $data = $request->validate([
             'site_id' => 'required|exists:project_sites,id',
             'target_site_id' => 'required|exists:project_sites,id',
@@ -66,7 +77,7 @@ class ApprovalController extends Controller
     public function approve(Approval $approval)
     {
         $user = auth()->user();
-        if (!$user->isManager() && !$user->isAdmin()) abort(403);
+        if (!$user->isManager() && !$user->isAdmin() && !$user->isApprovalOfficer()) abort(403);
         if ($approval->approver_id && $approval->approver_id !== $user->id && !$user->isAdmin()) abort(403);
 
         $approval->status = 'approved';
@@ -86,7 +97,7 @@ class ApprovalController extends Controller
     public function reject(Approval $approval)
     {
         $user = auth()->user();
-        if (!$user->isManager() && !$user->isAdmin()) abort(403);
+        if (!$user->isManager() && !$user->isAdmin() && !$user->isApprovalOfficer()) abort(403);
         if ($approval->approver_id && $approval->approver_id !== $user->id && !$user->isAdmin()) abort(403);
 
         $approval->status = 'rejected';

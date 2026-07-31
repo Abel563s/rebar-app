@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard - accessible by all authenticated users
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Admin Routes
+    // Admin-only Routes (Settings, User Management, Roles)
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
@@ -41,38 +41,31 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/settings/password', [SystemSettingController::class, 'updatePassword'])->name('settings.password.update');
 
         // User Management
-        // User Management
         Route::resource('users', AdminUserController::class);
-
-        // Rebar Management
-        Route::controller(\App\Http\Controllers\RebarDashboardController::class)->prefix('rebar')->name('rebar.')->group(function () {
-            Route::get('/', 'index')->name('dashboard');
-            // Other charts/ajax routes can go here
-        });
-
-        Route::prefix('rebar')->name('rebar.')->group(function () {
-            Route::resource('sites', \App\Http\Controllers\ProjectSiteController::class);
-            Route::resource('requirements', \App\Http\Controllers\RebarRequirementController::class);
-            Route::resource('cutting-logs', \App\Http\Controllers\RebarCuttingLogController::class);
-            Route::resource('offcuts', \App\Http\Controllers\OffcutController::class);
-            Route::patch('offcuts/{offcut}/status', [\App\Http\Controllers\OffcutController::class, 'updateStatus'])->name('offcuts.update-status');
-            Route::post('cutting-plan/generate/{site}', [\App\Http\Controllers\ProjectSiteController::class, 'generateCuttingPlan'])->name('cutting-plan.generate');
-            Route::get('reports', [\App\Http\Controllers\RebarReportController::class, 'index'])->name('reports');
-        });
     });
 
-    // Approvals: accessible to admins and managers
-    Route::middleware(['auth','role:admin|manager'])->prefix('admin/rebar')->name('admin.rebar.')->group(function () {
+    // Rebar Routes - accessible by authorized rebar roles
+    Route::middleware(['role:rebar'])->prefix('admin/rebar')->name('admin.rebar.')->group(function () {
+        Route::controller(\App\Http\Controllers\RebarDashboardController::class)->group(function () {
+            Route::get('/', 'index')->name('dashboard');
+        });
+
+        Route::resource('sites', \App\Http\Controllers\ProjectSiteController::class);
+        Route::get('requirements/import', [\App\Http\Controllers\RebarRequirementController::class, 'importForm'])->name('requirements.import-form');
+        Route::get('requirements/import/template', [\App\Http\Controllers\RebarRequirementController::class, 'downloadTemplate'])->name('requirements.import-template');
+        Route::post('requirements/import', [\App\Http\Controllers\RebarRequirementController::class, 'import'])->name('requirements.import');
+        Route::resource('requirements', \App\Http\Controllers\RebarRequirementController::class);
+        Route::resource('cutting-logs', \App\Http\Controllers\RebarCuttingLogController::class);
+        Route::resource('offcuts', \App\Http\Controllers\OffcutController::class);
+        Route::patch('offcuts/{offcut}/status', [\App\Http\Controllers\OffcutController::class, 'updateStatus'])->name('offcuts.update-status');
+        Route::post('cutting-plan/generate/{site}', [\App\Http\Controllers\ProjectSiteController::class, 'generateCuttingPlan'])->name('cutting-plan.generate');
+        Route::get('reports', [\App\Http\Controllers\RebarReportController::class, 'index'])->name('reports');
+
+        // Approvals - accessible to admin, manager, and approval_officer
         Route::resource('approvals', \App\Http\Controllers\ApprovalController::class);
         Route::patch('approvals/{approval}/approve', [\App\Http\Controllers\ApprovalController::class, 'approve'])->name('approvals.approve');
         Route::patch('approvals/{approval}/reject', [\App\Http\Controllers\ApprovalController::class, 'reject'])->name('approvals.reject');
     });
-
-
-
-    // Notification Routes
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
 
     // Notification Routes
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');

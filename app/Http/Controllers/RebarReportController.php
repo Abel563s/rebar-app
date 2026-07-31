@@ -13,6 +13,10 @@ class RebarReportController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isApprovalOfficer() && !$user->isCostControl() && !$user->isQuantitySurveyor() && !$user->isStoreKeeper() && !$user->isManager()) {
+            abort(403);
+        }
         // 1. Site-wise Detailed Statistics
         $siteStats = ProjectSite::withCount(['requirements', 'cuttingLogs', 'offcuts'])
             ->get()

@@ -78,4 +78,47 @@ class User extends Authenticatable
         return $this->role === 'user';
     }
 
+    public function isSiteEngineer(): bool
+    {
+        return $this->role === 'site_engineer';
+    }
+
+    public function isApprovalOfficer(): bool
+    {
+        return $this->role === 'approval_officer';
+    }
+
+    public function isCostControl(): bool
+    {
+        return $this->role === 'cost_control';
+    }
+
+    public function isQuantitySurveyor(): bool
+    {
+        return $this->role === 'quantity_surveyor';
+    }
+
+    public function isStoreKeeper(): bool
+    {
+        return $this->role === 'store_keeper';
+    }
+
+    public function isDepartmentAttendanceUser(): bool
+    {
+        return $this->role === 'department_attendance_user';
+    }
+
+    public function hasRebarAccess(): bool
+    {
+        return in_array($this->role, [
+            'admin',
+            'manager',
+            'site_engineer',
+            'approval_officer',
+            'cost_control',
+            'quantity_surveyor',
+            'store_keeper',
+        ]);
+    }
+
 }

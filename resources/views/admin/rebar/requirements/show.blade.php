@@ -8,10 +8,12 @@
             <div class="flex gap-4">
                 <a href="{{ route('admin.rebar.requirements.index') }}"
                     class="px-5 py-2.5 text-slate-600 font-bold hover:bg-slate-100 rounded-xl transition-all">Back</a>
+                @if(auth()->user()->isAdmin() || auth()->user()->isSiteEngineer())
                 <a href="{{ route('admin.rebar.cutting-logs.create', ['requirement_id' => $requirement->id]) }}"
                     class="px-5 py-2.5 bg-[#00ADC5] text-white rounded-xl font-bold shadow-lg shadow-cyan-500/20 hover:bg-[#0098ad] transition-all">
                     Log Cutting
                 </a>
+                @endif
             </div>
         </div>
 
@@ -71,21 +73,21 @@
                     <div class="bg-slate-50/50 px-6 py-4 border-b border-slate-200">
                         <h3 class="font-bold text-slate-800">Cutting History</h3>
                     </div>
-                    <div class="overflow-x-auto">
+                        <div class="overflow-x-auto shadow-lg hover:shadow-xl transition-all">
                         <table class="w-full text-left">
-                            <thead class="bg-slate-50 border-b border-slate-200">
-                                <tr>
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                            <thead class="border-b border-slate-200">
+                                <tr class="bg-[#00adc5] text-white">
+                                    <th class="px-6 py-3 text-xs font-bold text-white uppercase tracking-widest">
                                         Date</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                    <th class="px-6 py-3 text-xs font-bold text-white uppercase tracking-widest">
                                         Original</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Cut
+                                    <th class="px-6 py-3 text-xs font-bold text-white uppercase tracking-widest">Cut
                                     </th>
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                    <th class="px-6 py-3 text-xs font-bold text-white uppercase tracking-widest">
                                         Remaining</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                    <th class="px-6 py-3 text-xs font-bold text-white uppercase tracking-widest">
                                         Off-cut</th>
-                                    <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                    <th class="px-6 py-3 text-xs font-bold text-white uppercase tracking-widest">
                                         Used For</th>
                                 </tr>
                             </thead>

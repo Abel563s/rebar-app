@@ -48,16 +48,23 @@ class OffcutController extends Controller
      */
     public function create()
     {
-        // Manual creation if needed
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
         return view('admin.rebar.offcuts.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreOffcutRequest $request)
     {
-        Offcut::create($request->validated());
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
+
+        $validated = $request->validated();
+        $validated['user_id'] = auth()->id();
+        Offcut::create($validated);
         return redirect()->route('admin.rebar.offcuts.index')->with('success', 'Off-cut registered manually.');
     }
 
@@ -74,32 +81,54 @@ class OffcutController extends Controller
      */
     public function edit(Offcut $offcut)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
+        if (!$user->isAdmin() && $offcut->user_id !== $user->id) {
+            abort(403);
+        }
         return view('admin.rebar.offcuts.edit', compact('offcut'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateOffcutRequest $request, Offcut $offcut)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
+        if (!$user->isAdmin() && $offcut->user_id !== $user->id) {
+            abort(403);
+        }
+
         $offcut->update($request->validated());
         return redirect()->route('admin.rebar.offcuts.index')->with('success', 'Off-cut updated.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Offcut $offcut)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
+        if (!$user->isAdmin() && $offcut->user_id !== $user->id) {
+            abort(403);
+        }
+
         $offcut->delete();
         return redirect()->route('admin.rebar.offcuts.index')->with('success', 'Off-cut deleted.');
     }
 
-    /**
-     * Update the status of the specified offcut.
-     */
     public function updateStatus(Request $request, Offcut $offcut)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
+        if (!$user->isAdmin() && $offcut->user_id !== $user->id) {
+            abort(403);
+        }
+
         $request->validate([
             'status' => 'required|in:Available,Used,Scrap'
         ]);

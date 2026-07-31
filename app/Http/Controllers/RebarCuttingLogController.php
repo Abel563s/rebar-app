@@ -60,17 +60,21 @@ class RebarCuttingLogController extends Controller
      */
     public function create()
     {
-        // Typically created from the requirement view, but can exist standalone
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
         $requirements = \App\Models\RebarRequirement::with('site')->latest()->limit(50)->get();
         $availableOffcuts = \App\Models\Offcut::where('status', 'Available')->where('quantity', '>', 0)->get();
         return view('admin.rebar.cutting_logs.create', compact('requirements', 'availableOffcuts'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreRebarCuttingLogRequest $request)
     {
+        $user = auth()->user();
+        if (!$user->isAdmin() && !$user->isSiteEngineer()) {
+            abort(403);
+        }
         $validated = $request->validated();
         $requirement = \App\Models\RebarRequirement::findOrFail($validated['rebar_requirement_id']);
 
@@ -150,6 +154,9 @@ class RebarCuttingLogController extends Controller
      */
     public function destroy(RebarCuttingLog $cuttingLog)
     {
+        if ($cuttingLog->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized. You can only delete cutting logs you created.');
+        }
         // Restore reused offcut if applicable
         if ($cuttingLog->reused_offcut_id) {
             $sourceOffcut = \App\Models\Offcut::find($cuttingLog->reused_offcut_id);

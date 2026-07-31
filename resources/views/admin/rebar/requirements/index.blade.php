@@ -41,7 +41,7 @@
         </div>
 
         <!-- Filter Modern Bar -->
-        <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-200/60 transition-all hover:shadow-md">
+        <div class="bg-white/90 backdrop-blur-sm rounded-[2rem] p-6 shadow-lg hover:shadow-xl transition-all border border-slate-200/60">
             <form method="GET" action="{{ route('admin.rebar.requirements.index') }}"
                 class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 <div class="space-y-2">
@@ -101,22 +101,22 @@
         <!-- Interactive Table -->
         <div
             class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-200/60 overflow-hidden relative">
-            <div class="overflow-x-auto overflow-y-visible">
+                <div class="overflow-x-auto overflow-y-visible shadow-lg hover:shadow-xl transition-all">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-50/50 border-b border-slate-100">
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                        <tr class="bg-[#00adc5] text-white">
+                            <th class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
                                 Requirement Reference</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                            <th class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
                                 Structural Element</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                            <th class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
                                 Technical Specs</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                            <th class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
                                 Quantity</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                            <th class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
                                 Drawing Info</th>
                             <th
-                                class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">
+                                class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right">
                                 Actions</th>
                         </tr>
                     </thead>
@@ -198,12 +198,14 @@
                                 <td class="px-8 py-5">
                                     <div
                                         class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                        <a href="{{ route('admin.rebar.sites.show', $req->site_id) }}"
-                                            class="flex items-center gap-2 px-4 py-2 text-cyan-600 bg-cyan-50 hover:bg-cyan-100 rounded-xl transition-all font-bold text-xs"
-                                            title="View Site Hub">
-                                            <i data-lucide="building-2" class="w-4 h-4"></i>
-                                            View Site
-                                        </a>
+                                        @if($req->site_id)
+                                            <a href="{{ route('admin.rebar.sites.show', $req->site_id) }}"
+                                                class="flex items-center gap-2 px-4 py-2 text-cyan-600 bg-cyan-50 hover:bg-cyan-100 rounded-xl transition-all font-bold text-xs"
+                                                title="View Site Hub">
+                                                <i data-lucide="building-2" class="w-4 h-4"></i>
+                                                View Site
+                                            </a>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

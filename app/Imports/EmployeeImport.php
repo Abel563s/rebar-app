@@ -78,7 +78,7 @@ class EmployeeImport implements ToModel, WithHeadingRow, WithValidation
             'email' => 'required|email',
             'employee_id' => 'required|string|unique:employees,employee_id',
             'department' => 'required|string',
-            'role' => 'required|string|in:admin,manager,user,department_attendance_user',
+            'role' => 'required|string|in:admin,manager,user,department_attendance_user,site_engineer,approval_officer,cost_control,quantity_surveyor,store_keeper',
         ];
     }
 }

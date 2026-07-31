@@ -45,7 +45,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
-            'role' => ['required', Rule::in(['admin', 'manager', 'user'])],
+            'role' => ['required', Rule::in(['admin', 'manager', 'user', 'department_attendance_user', 'site_engineer', 'approval_officer', 'cost_control', 'quantity_surveyor', 'store_keeper'])],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'is_active' => ['nullable', 'boolean'],
         ]);
@@ -71,7 +71,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'role' => ['required', Rule::in(['admin', 'manager', 'user'])],
+            'role' => ['required', Rule::in(['admin', 'manager', 'user', 'department_attendance_user', 'site_engineer', 'approval_officer', 'cost_control', 'quantity_surveyor', 'store_keeper'])],
             'is_active' => ['required', 'boolean'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
