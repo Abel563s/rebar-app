@@ -66,7 +66,7 @@
             </div>
         </div>
 
-<div class="section-card shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm border border-slate-200/60">
+<div class="section-card shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm border border-slate-200/60 p-4">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
@@ -166,7 +166,7 @@
 
         <!-- Create New Identity Modal -->
         <div x-show="createModal" 
-             style="display: none;"
+             x-cloak
              class="fixed inset-0 z-[100] flex items-center justify-center p-4"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0"
