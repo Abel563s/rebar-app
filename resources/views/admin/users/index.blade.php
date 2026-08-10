@@ -66,24 +66,24 @@
             </div>
         </div>
 
-<div class="section-card shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm border border-slate-200/60 p-4">
-    <div class="overflow-x-auto">
+<div class="section-card">
+    <div class="overflow-x-auto shadow-lg hover:shadow-xl transition-all">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-[#00adc5] text-white border-b border-[#00adc5]">
-                     <th class="px-5 py-3 text-[10px] font-black text-white uppercase tracking-[0.15em]">User</th>
-                     <th class="px-5 py-3 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">Role</th>
-                     <th class="px-5 py-3 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">Status</th>
-                     <th class="px-5 py-3 text-[10px] font-black text-white uppercase tracking-[0.15em] text-right">Actions</th>
+                     <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em]">User</th>
+                     <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">Role</th>
+                     <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">Status</th>
+                     <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-right">Actions</th>
                  </tr>
              </thead>
              <tbody class="divide-y divide-slate-50">
                  @forelse($users as $user)
-                     <tr class="hover:bg-slate-50/50 transition-all group">
-                         <td class="px-5 py-3">
+                     <tr class="hover:bg-cyan-50/30 transition-all group">
+                         <td class="px-4 py-2.5">
                              <div class="flex items-center gap-3">
                                  <div class="relative shrink-0">
-                                     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-500 font-black text-sm">
+                                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-500 font-black text-xs">
                                          {{ substr($user->name, 0, 1) }}
                                      </div>
                                      <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white {{ $user->is_active ? 'bg-emerald-500' : 'bg-slate-300' }}"></div>
@@ -95,7 +95,7 @@
                              </div>
                          </td>
 
-                                <td class="px-5 py-3 text-center">
+                                <td class="px-4 py-2.5 text-center">
                                     @php
                                         $roleStyles = match($user->role) {
                                             'admin' => 'bg-emerald-100/50 text-emerald-600 border-emerald-200',
@@ -113,14 +113,14 @@
                                         {{ ucfirst($user->role) }}
                                     </span>
                                 </td>
-                                <td class="px-5 py-3 text-center">
+                                <td class="px-4 py-2.5 text-center">
                                     <div class="flex items-center justify-center gap-1.5">
                                         <span class="text-[10px] font-black uppercase tracking-widest {{ $user->is_active ? 'text-emerald-500' : 'text-slate-400' }}">
                                             {{ $user->is_active ? 'Operational' : 'Decommissioned' }}
                                         </span>
                                     </div>
                                 </td>
-                                <td class="px-5 py-3 text-right">
+                                <td class="px-4 py-2.5 text-right">
                                     <div class="flex items-center justify-end gap-1">
                                         <button @click="openPwModal({id: {{ $user->id }}, name: '{{ $user->name }}', email: '{{ $user->email }}', role: '{{ $user->role }}', is_active: {{ $user->is_active ? 1 : 0 }}})" 
                                            class="p-2 text-slate-400 hover:text-[#00ADC5] hover:bg-cyan-50 rounded-lg transition-all" title="Update Security Key">

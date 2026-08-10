@@ -38,11 +38,14 @@
                                 <option value="">-- Choose active requirement --</option>
                                 @foreach($requirements as $req)
                                     <option value="{{ $req->id }}"
+                                        data-tracking-id="{{ $req->tracking_id }}"
+                                        data-structural-element="{{ $req->structural_element }}"
                                         data-diameter="{{ $req->bar_diameter }}"
                                         data-length="{{ $req->required_length }}"
                                         data-quantity="{{ $req->quantity }}"
                                         data-grade="{{ $req->steel_grade }}"
                                         data-site-id="{{ $req->site_id }}"
+                                        data-site-name="{{ $req->site->site_name ?? '' }}"
                                         {{ (old('rebar_requirement_id') ?? request('requirement_id')) == $req->id ? 'selected' : '' }}>
                                         {{ $req->tracking_id }} | {{ $req->structural_element }} | Ø{{ $req->bar_diameter }}mm | {{ $req->steel_grade ? 'Grade '.$req->steel_grade.' |' : '' }} Qty: {{ $req->quantity }}
                                     </option>
@@ -59,6 +62,32 @@
                             </div>
                             <p class="text-[9px] font-bold text-slate-400 ml-1" id="quantity_remaining_hint">This will reduce the requirement quantity</p>
                             @error('quantity_cut') <p class="text-rose-500 text-[10px] font-bold mt-0.5 ml-1 uppercase tracking-wider">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+
+                    <!-- Auto-pulled Requirement Summary -->
+                    <div id="requirement_summary" class="hidden mt-3 p-3 bg-cyan-50 border border-cyan-100 rounded-xl">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></div>
+                            <span class="text-[9px] font-black text-cyan-600 uppercase tracking-widest">Data Pulled from Requirement</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] font-bold text-slate-700">
+                            <div>
+                                <span class="text-[9px] font-black text-slate-400 uppercase">Element</span>
+                                <p id="summary_element" class="text-slate-900">-</p>
+                            </div>
+                            <div>
+                                <span class="text-[9px] font-black text-slate-400 uppercase">Diameter</span>
+                                <p id="summary_diameter" class="text-slate-900">-</p>
+                            </div>
+                            <div>
+                                <span class="text-[9px] font-black text-slate-400 uppercase">Grade</span>
+                                <p id="summary_grade" class="text-slate-900">-</p>
+                            </div>
+                            <div>
+                                <span class="text-[9px] font-black text-slate-400 uppercase">Length / Qty</span>
+                                <p id="summary_length_qty" class="text-slate-900">-</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -214,7 +243,15 @@
                         cutLengthInput.value = selectedOption.dataset.length;
                         maxQuantity = parseInt(selectedOption.dataset.quantity) || 0;
                         quantityCutInput.max = maxQuantity;
-                        
+
+                        // Update summary card
+                        const summary = document.getElementById('requirement_summary');
+                        document.getElementById('summary_element').textContent = selectedOption.dataset.structuralElement || '-';
+                        document.getElementById('summary_diameter').textContent = 'Ø' + selectedOption.dataset.diameter + 'mm';
+                        document.getElementById('summary_grade').textContent = selectedOption.dataset.grade ? 'Grade ' + selectedOption.dataset.grade : '-';
+                        document.getElementById('summary_length_qty').textContent = selectedOption.dataset.length + 'm / ' + selectedOption.dataset.quantity + ' pcs';
+                        summary.classList.remove('hidden');
+
                         filterOffcuts(selectedOption.dataset.diameter, selectedOption.dataset.siteId);
                         updateQuantityHint();
                     } else {
@@ -223,6 +260,7 @@
                         cutLengthInput.value = '';
                         maxQuantity = 0;
                         quantityHint.textContent = 'This will reduce the requirement quantity';
+                        document.getElementById('requirement_summary').classList.add('hidden');
                         resetOffcutFilter();
                     }
                     calculateRemainder();

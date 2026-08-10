@@ -100,6 +100,8 @@
             background: #cbd5e1;
         }
 
+        [x-cloak] { display: none !important; }
+
         /* Executive Shadows & Depth */
         /* kept intentionally similar but aligned to brand accent */
 

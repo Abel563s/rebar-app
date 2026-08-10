@@ -89,7 +89,7 @@
                         <select name="structural_element" required
                             class="w-full bg-slate-50 border-slate-200 rounded-2xl py-3.5 px-4 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-700">
                             <option value="" disabled selected>Select Element</option>
-                            @foreach(['BEAM', 'Slab', 'Columons', 'Shear Wall', 'Footing', 'Retaining Wall'] as $elem)
+                            @foreach(['BEAM', 'Slab', 'Columons', 'Shear Wall', 'Footing', 'Retaining Wall', 'Punching', 'Bar Chair', 'Distribution'] as $elem)
                                 <option value="{{ $elem }}" {{ old('structural_element') == $elem ? 'selected' : '' }}>
                                     {{ $elem }}
                                 </option>
