@@ -9,8 +9,8 @@
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-6 h-6 object-contain">
             </div>
             <div class="flex flex-col leading-none sidebar-text animate-pop-in">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-[#00ADC5]">System</span>
-                <span class="text-sm font-black tracking-tighter mt-0.5 text-slate-900">Intelligence</span>
+                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-[#00ADC5]">EEC Rebar</span>
+                <span class="text-sm font-black tracking-tighter mt-0.5 text-slate-900">Management</span>
             </div>
         </div>
     </div>
