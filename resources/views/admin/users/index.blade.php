@@ -1,20 +1,12 @@
 <x-app-layout>
-    <div class="py-4 space-y-4 min-w-0 px-4" x-data="{ 
-        pwModal: false, 
-        createModal: false,
-        selectedUser: {id: null, name: '', email: '', role: '', is_active: 1},
-        openPwModal(user) {
-            this.selectedUser = user;
-            this.pwModal = true;
-        }
-    }">
+    <div class="py-4 space-y-4 min-w-0 px-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
                 <h2 class="text-xl font-black text-slate-900 tracking-tight">Access Control</h2>
                 <p class="text-xs text-slate-500 font-medium">Manage system identities and secure protocol permissions.</p>
             </div>
             
-            <button @click="createModal = true" 
+            <button type="button" onclick="document.getElementById('createModal').classList.remove('hidden')" 
                     class="flex items-center justify-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg hover:bg-[#00ADC5] hover:shadow-md transition-all active:scale-95 group">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 Create User
@@ -122,25 +114,25 @@
                                 </td>
                                 <td class="px-4 py-2.5 text-right">
                                     <div class="flex items-center justify-end gap-1">
-                                        <button @click="openPwModal({id: {{ $user->id }}, name: '{{ $user->name }}', email: '{{ $user->email }}', role: '{{ $user->role }}', is_active: {{ $user->is_active ? 1 : 0 }}})" 
+                                        <button type="button" onclick="openPwModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ addslashes($user->email) }}', '{{ $user->role }}', {{ $user->is_active ? 1 : 0 }})" 
                                            class="p-2 text-slate-400 hover:text-[#00ADC5] hover:bg-cyan-50 rounded-lg transition-all" title="Update Security Key">
-                                            <i data-lucide="key-round" class="w-4 h-4"></i>
-                                        </button>
-                                        <a href="{{ route('admin.users.edit', $user) }}" 
-                                           class="p-2 text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-all" title="Modify Protocol">
-                                            <i data-lucide="user-cog" class="w-4 h-4"></i>
-                                        </a>
-                                        @if($user->id !== auth()->id())
-                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Initiate user node decommission?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all" title="Purge Node">
-                                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                                </button>
-                                            </form>
-                                        @endif
-                                    </div>
-                                </td>
+                                             <i data-lucide="key-round" class="w-4 h-4"></i>
+                                         </button>
+                                         <a href="{{ route('admin.users.edit', $user) }}" 
+                                            class="p-2 text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-all" title="Modify Protocol">
+                                             <i data-lucide="user-cog" class="w-4 h-4"></i>
+                                         </a>
+                                         @if($user->id !== auth()->id())
+                                             <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Initiate user node decommission?')">
+                                                 @csrf
+                                                 @method('DELETE')
+                                                 <button type="submit" class="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all" title="Purge Node">
+                                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                 </button>
+                                             </form>
+                                         @endif
+                                     </div>
+                                 </td>
                             </tr>
                         @empty
                             <tr>
@@ -165,14 +157,9 @@
         </div>
 
         <!-- Create New Identity Modal -->
-        <div x-show="createModal" 
-             x-cloak
-             class="fixed inset-0 z-[100] flex items-center justify-center p-4"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100">
+        <div id="createModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
             <!-- Backdrop -->
-            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="createModal = false"></div>
+            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="document.getElementById('createModal').classList.add('hidden')"></div>
             
             <!-- Modal Content -->
             <div class="relative bg-white rounded-2xl w-full max-w-xl shadow-xl border border-slate-200 overflow-hidden">
@@ -187,7 +174,7 @@
                                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Deployment Protocol</p>
                             </div>
                         </div>
-                        <button @click="createModal = false" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all active:scale-95">
+                        <button type="button" onclick="document.getElementById('createModal').classList.add('hidden')" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all active:scale-95">
                             <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -211,9 +198,10 @@
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Role</label>
                                 <select name="role" required
                                     class="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 focus:border-[#00ADC5] focus:ring-2 focus:ring-[#00ADC5]/10 transition-all outline-none cursor-pointer">
-                           
+                                <option value="user">User</option>
                                 <option value="manager">Manager</option>
                                 <option value="site_engineer">Site Engineer</option>
+                                <option value="approval_officer">Approval Officer</option>
                                 <option value="cost_control">Cost Control</option>
                                 <option value="quantity_surveyor">Quantity Surveyor</option>
                                 <option value="store_keeper">Store Keeper</option>
@@ -244,7 +232,7 @@
                         </div>
 
                         <div class="flex items-center justify-end gap-2 pt-2">
-                            <button type="button" @click="createModal = false" 
+                            <button type="button" onclick="document.getElementById('createModal').classList.add('hidden')" 
                                     class="px-4 py-2 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">
                                 Cancel
                             </button>
@@ -259,14 +247,9 @@
         </div>
 
 <!-- Password Update Modal -->
-        <div x-show="pwModal" 
-             style="display: none;"
-             class="fixed inset-0 z-[100] flex items-center justify-center p-4"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100">
+        <div id="pwModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
             <!-- Backdrop -->
-            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" @click="pwModal = false"></div>
+            <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="document.getElementById('pwModal').classList.add('hidden')"></div>
             
             <!-- Modal Content -->
             <div class="relative bg-white rounded-2xl w-full max-w-sm shadow-xl border border-slate-200 overflow-hidden">
@@ -281,23 +264,23 @@
                                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Security Protocol Update</p>
                             </div>
                         </div>
-                        <button @click="pwModal = false" class="p-2 text-slate-400 hover:text-slate-900 transition-colors">
+                        <button type="button" onclick="document.getElementById('pwModal').classList.add('hidden')" class="p-2 text-slate-400 hover:text-slate-900 transition-colors">
                             <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
                     </div>
 
-                    <form :action="`/admin/users/${selectedUser.id}`" method="POST" class="space-y-3">
+                    <form id="pwForm" method="POST" class="space-y-3">
                         @csrf
                         @method('PUT')
                         
-                        <input type="hidden" name="name" :value="selectedUser.name">
-                        <input type="hidden" name="email" :value="selectedUser.email">
-                        <input type="hidden" name="role" :value="selectedUser.role">
-                        <input type="hidden" name="is_active" :value="selectedUser.is_active">
+                        <input type="hidden" name="name" id="pwName">
+                        <input type="hidden" name="email" id="pwEmail">
+                        <input type="hidden" name="role" id="pwRole">
+                        <input type="hidden" name="is_active" id="pwIsActive">
 
                         <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Target Identity</p>
-                            <p class="text-sm font-black text-slate-900 tracking-tight" x-text="selectedUser.name"></p>
+                            <p class="text-sm font-black text-slate-900 tracking-tight" id="pwUserName">-</p>
                         </div>
 
                         <div class="space-y-3">
@@ -315,7 +298,7 @@
                         </div>
 
                         <div class="flex gap-2 pt-1">
-                            <button type="button" @click="pwModal = false" 
+                            <button type="button" onclick="document.getElementById('pwModal').classList.add('hidden')" 
                                     class="flex-1 py-2 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-all">
                                 Cancel
                             </button>
@@ -330,3 +313,15 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+    function openPwModal(userId, name, email, role, isActive) {
+        document.getElementById('pwName').value = name;
+        document.getElementById('pwEmail').value = email;
+        document.getElementById('pwRole').value = role;
+        document.getElementById('pwIsActive').value = isActive;
+        document.getElementById('pwUserName').textContent = name;
+        document.getElementById('pwForm').action = '/admin/users/' + userId;
+        document.getElementById('pwModal').classList.remove('hidden');
+    }
+</script>
