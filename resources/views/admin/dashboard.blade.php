@@ -214,6 +214,7 @@
                     <table class="mini-table">
                         <thead>
                             <tr class="bg-[#00adc5] text-white">
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">#</th>
                                 <th class="text-white">User</th>
                                 <th class="text-center text-white">Cuts</th>
                                 <th class="text-right text-white">Length</th>
@@ -222,6 +223,7 @@
                         <tbody>
                             @foreach($topUsers as $u)
                                 <tr>
+                                    <td class="px-4 py-2.5 text-center text-[10px] font-black text-slate-400">{{ $loop->iteration }}</td>
                                     <td>
                                         <div class="flex items-center gap-2">
                                             <div class="w-7 h-7 rounded-lg bg-slate-900 text-white flex items-center justify-center text-[10px] font-black">{{ substr($u['name'], 0, 1) }}</div>
@@ -233,7 +235,7 @@
                                 </tr>
                             @endforeach
                             @if($topUsers->isEmpty())
-                                <tr><td colspan="3" class="text-center text-xs font-bold text-slate-400 py-4">No data yet</td></tr>
+                                <tr><td colspan="4" class="text-center text-xs font-bold text-slate-400 py-4">No data yet</td></tr>
                             @endif
                         </tbody>
                     </table>
@@ -287,6 +289,7 @@
                     <table class="mini-table">
                         <thead>
                             <tr class="bg-[#00adc5] text-white">
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">#</th>
                                 <th class="text-white">Diameter</th>
                                 <th class="text-center text-white">Cuts</th>
                                 <th class="text-right text-white">Length</th>
@@ -295,13 +298,14 @@
                         <tbody>
                             @foreach($diameterDistribution as $d)
                                 <tr>
+                                    <td class="px-4 py-2.5 text-center text-[10px] font-black text-slate-400">{{ $loop->iteration }}</td>
                                     <td class="text-xs font-black text-slate-900">Ø{{ $d->bar_diameter }}mm</td>
                                     <td class="text-center text-xs font-bold text-slate-600">{{ $d->count }}</td>
                                     <td class="text-right text-xs font-black text-slate-900">{{ number_format($d->total_length, 1) }} m</td>
                                 </tr>
                             @endforeach
                             @if($diameterDistribution->isEmpty())
-                                <tr><td colspan="3" class="text-center text-xs font-bold text-slate-400 py-4">No data yet</td></tr>
+                                <tr><td colspan="4" class="text-center text-xs font-bold text-slate-400 py-4">No data yet</td></tr>
                             @endif
                         </tbody>
                     </table>

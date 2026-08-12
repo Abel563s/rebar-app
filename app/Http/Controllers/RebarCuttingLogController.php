@@ -65,6 +65,14 @@ class RebarCuttingLogController extends Controller
             abort(403);
         }
         $requirements = \App\Models\RebarRequirement::with('site')->latest()->limit(50)->get();
+
+        if (request('requirement_id')) {
+            $requiredRequirement = \App\Models\RebarRequirement::with('site')->find(request('requirement_id'));
+            if ($requiredRequirement && !$requirements->contains('id', $requiredRequirement->id)) {
+                $requirements->prepend($requiredRequirement);
+            }
+        }
+
         $availableOffcuts = \App\Models\Offcut::where('status', 'Available')->where('quantity', '>', 0)->get();
         return view('admin.rebar.cutting_logs.create', compact('requirements', 'availableOffcuts'));
     }

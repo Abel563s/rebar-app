@@ -91,22 +91,24 @@
         <!-- Table Container -->
         <div class="section-card shadow-lg hover:shadow-xl transition-all">
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-[#00adc5]/20 bg-[#00adc5]">
-                            <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Log Info</th>
-                            <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Project Site</th>
-                            <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Requirement Reference</th>
-                            <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Cutting Geometry</th>
-                            <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Off-Cut / Reusable</th>
-                            <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Usage / Location</th>
-                            <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-50">
-                        @forelse($logs as $log)
-                            <tr class="hover:bg-cyan-50/20 transition-all group">
-                                <td class="px-4 py-2.5">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-[#00adc5]/20 bg-[#00adc5]">
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em] text-center">#</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Log Info</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Project Site</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Requirement Reference</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Cutting Geometry</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Off-Cut / Reusable</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Usage / Location</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            @forelse($logs as $log)
+                                <tr class="hover:bg-slate-50/50 transition-all group">
+                                    <td class="px-4 py-2.5 text-center text-[10px] font-black text-slate-400">{{ ($logs->currentPage() - 1) * $logs->perPage() + $loop->iteration }}</td>
+                                    <td class="px-4 py-2.5">
                                     <div class="flex items-center gap-2">
                                         <div class="w-9 h-9 rounded-lg bg-slate-100 flex flex-col items-center justify-center border border-slate-200 group-hover:bg-white group-hover:border-cyan-200 transition-all">
                                             <span class="text-[8px] font-black text-slate-400 uppercase leading-none">{{ \Carbon\Carbon::parse($log->date)->format('M') }}</span>

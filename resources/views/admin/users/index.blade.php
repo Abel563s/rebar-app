@@ -58,21 +58,23 @@
             </div>
         </div>
 
-<div class="section-card">
-    <div class="overflow-x-auto shadow-lg hover:shadow-xl transition-all">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="bg-[#00adc5] text-white border-b border-[#00adc5]">
-                     <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em]">User</th>
-                     <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">Role</th>
-                     <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">Status</th>
-                     <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-right">Actions</th>
-                 </tr>
-             </thead>
-             <tbody class="divide-y divide-slate-50">
-                 @forelse($users as $user)
-                     <tr class="hover:bg-cyan-50/30 transition-all group">
-                         <td class="px-4 py-2.5">
+            <div class="section-card">
+                <div class="overflow-x-auto shadow-lg hover:shadow-xl transition-all">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#00adc5] text-white">
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">#</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em]">User</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">Role</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">Status</th>
+                                <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            @forelse($users as $user)
+                                <tr class="hover:bg-cyan-50/30 transition-all group">
+                                    <td class="px-4 py-2.5 text-center text-[10px] font-black text-slate-400">{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}</td>
+                                    <td class="px-4 py-2.5">
                              <div class="flex items-center gap-3">
                                  <div class="relative shrink-0">
                                      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-500 font-black text-xs">
@@ -136,7 +138,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-4 py-12 text-center">
+                                <td colspan="5" class="px-4 py-12 text-center">
                                     <div class="flex flex-col items-center gap-3">
                                         <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center">
                                             <i data-lucide="user-x" class="w-6 h-6 text-slate-300"></i>
