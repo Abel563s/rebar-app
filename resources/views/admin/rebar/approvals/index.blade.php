@@ -15,11 +15,11 @@
             </button>
         </div>
 
-        <div class="section-card">
-            <div class="overflow-x-auto shadow-lg hover:shadow-xl transition-all">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-[#00adc5] text-white">
+                        <tr class="border-b border-white/10" style="background: linear-gradient(180deg, #00ADC5 0%, #000000 100%);">
                             <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em]">Site</th>
                             <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em]">Offcut</th>
                             <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em]">Requested By</th>
@@ -84,7 +84,7 @@
             </div>
 
             @if($approvals->hasPages())
-                <div class="px-4 py-3 border-t border-slate-50">
+                <div class="px-4 py-3 border-t border-slate-50 bg-slate-50/30 rounded-b-2xl">
                     {{ $approvals->links() }}
                 </div>
             @endif

@@ -43,6 +43,37 @@ class OffcutController extends Controller
         return view('admin.rebar.offcuts.index', compact('offcuts', 'availableCount', 'usedCount', 'sites'));
     }
 
+    public function importForm()
+    {
+        return view('admin.rebar.offcuts.import');
+    }
+
+    public function downloadTemplate()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\OffcutTemplateExport(),
+            'offcuts_template.xlsx'
+        );
+    }
+
+    public function import(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:2048',
+        ]);
+
+        try {
+            \Maatwebsite\Excel\Facades\Excel::import(
+                new \App\Imports\OffcutImport(auth()->id()),
+                $request->file('file')
+            );
+
+            return redirect()->route('admin.rebar.offcuts.index')->with('success', 'Off-cuts imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Import failed: ' . $e->getMessage())->withInput();
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      */

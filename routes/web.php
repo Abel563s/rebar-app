@@ -56,6 +56,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('requirements/import', [\App\Http\Controllers\RebarRequirementController::class, 'import'])->name('requirements.import');
         Route::resource('requirements', \App\Http\Controllers\RebarRequirementController::class);
         Route::resource('cutting-logs', \App\Http\Controllers\RebarCuttingLogController::class);
+        Route::get('offcuts/import', [\App\Http\Controllers\OffcutController::class, 'importForm'])->name('offcuts.import-form');
+        Route::get('offcuts/import/template', [\App\Http\Controllers\OffcutController::class, 'downloadTemplate'])->name('offcuts.import-template');
+        Route::post('offcuts/import', [\App\Http\Controllers\OffcutController::class, 'import'])->name('offcuts.import');
         Route::resource('offcuts', \App\Http\Controllers\OffcutController::class);
         Route::patch('offcuts/{offcut}/status', [\App\Http\Controllers\OffcutController::class, 'updateStatus'])->name('offcuts.update-status');
         Route::post('cutting-plan/generate/{site}', [\App\Http\Controllers\ProjectSiteController::class, 'generateCuttingPlan'])->name('cutting-plan.generate');

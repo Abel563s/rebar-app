@@ -14,11 +14,13 @@
                 </h2>
                 <p class="text-sm text-slate-500 font-medium">Update structural steel specification parameters</p>
             </div>
-            <a href="{{ route('admin.rebar.requirements.index') }}"
-                class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all shadow-sm">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                Back to List
-            </a>
+            @if(request('return'))
+                <a href="{{ request('return') }}"
+                    class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-all shadow-sm">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Back
+                </a>
+            @endif
         </div>
 
         <div
@@ -29,6 +31,9 @@
                 class="p-8 md:p-10 space-y-8">
                 @csrf
                 @method('PUT')
+                @if(request('return'))
+                    <input type="hidden" name="return" value="{{ request('return') }}">
+                @endif
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Structural Element -->
@@ -148,8 +153,13 @@
                 </div>
 
                 <div class="flex items-center justify-end pt-8 border-t border-slate-100 gap-4">
-                    <a href="{{ route('admin.rebar.requirements.index') }}"
-                        class="px-8 py-4 text-slate-500 font-bold uppercase text-xs tracking-widest hover:text-slate-700 transition-all">Cancel</a>
+                    @if(request('return'))
+                        <a href="{{ request('return') }}"
+                            class="px-8 py-4 text-slate-500 font-bold uppercase text-xs tracking-widest hover:text-slate-700 transition-all">Cancel</a>
+                    @else
+                        <a href="{{ route('admin.rebar.requirements.index') }}"
+                            class="px-8 py-4 text-slate-500 font-bold uppercase text-xs tracking-widest hover:text-slate-700 transition-all">Cancel</a>
+                    @endif
                     <button type="submit"
                         class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:bg-slate-800 hover:scale-[1.02] transition-all active:scale-95">
                         Update Protocol

@@ -21,11 +21,17 @@ class ProjectSite extends Model
         'amount_needed_12',
         'amount_needed_14',
         'amount_needed_16',
-        'amount_needed_18',
         'amount_needed_20',
         'amount_needed_24',
-        'amount_needed_28',
         'amount_needed_32',
+        'price_08',
+        'price_10',
+        'price_12',
+        'price_14',
+        'price_16',
+        'price_20',
+        'price_24',
+        'price_32',
     ];
 
     public static function boot()

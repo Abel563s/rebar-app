@@ -2,11 +2,11 @@
     <div class="py-6 space-y-4 min-w-0 px-4 sm:px-6 lg:px-8">
         <!-- Back Navigation -->
         <div class="flex items-center justify-between">
-            <a href="{{ route('admin.rebar.sites.index') }}"
+            <button onclick="history.back()"
                 class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-cyan-500 hover:text-cyan-600 hover:bg-cyan-50 transition-all shadow-sm group">
                 <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
-                Back to All Sites
-            </a>
+                Back
+            </button>
             <div class="flex items-center gap-2">
                 <span class="px-4 py-2 bg-slate-50 text-slate-600 rounded-xl font-bold text-xs border border-slate-200">
                     <i data-lucide="calendar" class="w-3 h-3 inline mr-1"></i>
@@ -33,9 +33,8 @@
 </script>
 
         <!-- Site Header Hub -->
-        <div class="section-card">
-            <div class="p-5 md:p-6">
-                    <div class="flex flex-col md:flex-row justify-between items-start gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-4">
                     <!-- Left: Site Identity -->
                         <div class="space-y-2">
                             <div class="flex items-center gap-2">
@@ -142,14 +141,12 @@
                             <span class="text-[10px] font-black text-slate-400">KG</span>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
 
         <!-- Steel Requirement Analysis -->
-        <div class="section-card">
-            <div class="p-5 md:p-6">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center text-white">
                             <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -167,8 +164,8 @@
                 </div>
 
                 <div id="steel-analysis-view">
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                        @foreach(['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'] as $d)
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                        @foreach(['08', '10', '12', '14', '16', '20', '24', '32'] as $d)
                             @php
                                 $diameter = (int)$d;
                                 $needed = (int)($site->{'amount_needed_'.$d} ?? 0);
@@ -197,6 +194,14 @@
                                         <span class="text-[10px] font-black text-slate-800">{{ number_format($needed) }} PCS</span>
                                     </div>
                                     <div class="flex justify-between items-end">
+                                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Price per PCS</span>
+                                        <span class="text-[10px] font-black text-slate-600">{{ $site->{'price_'.$d} ? number_format($site->{'price_'.$d}, 2) : '-' }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-end">
+                                        <span class="text-[8px] font-black text-cyan-500 uppercase tracking-widest">Line Total</span>
+                                        <span class="text-[10px] font-black text-cyan-600">{{ $site->{'price_'.$d} ? number_format(($site->{'price_'.$d}) * $needed, 2) : '-' }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-end">
                                         <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Actual (Used)</span>
                                         <span class="text-[10px] font-black text-cyan-600">{{ number_format($actual) }} PCS</span>
                                     </div>
@@ -221,12 +226,15 @@
                 <form id="steel-analysis-edit" class="hidden" method="POST" action="{{ route('admin.rebar.sites.update', $site) }}">
                     @csrf
                     @method('PATCH')
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                        @foreach(['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'] as $d)
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        @foreach(['08', '10', '12', '14', '16', '20', '24', '32'] as $d)
                             @php $val = old('amount_needed_'.$d, $site->{'amount_needed_'.$d} ?? 0); @endphp
+                            @php $priceVal = old('price_'.$d, $site->{'price_'.$d}); @endphp
                             <div class="p-3 rounded-xl border border-slate-100 bg-slate-50">
                                 <label class="block text-[10px] font-black text-slate-600 mb-1">Ø{{ $d }}mm Plan</label>
-                                <input name="amount_needed_{{ $d }}" type="number" min="0" step="1" value="{{ $val }}" class="w-full px-2 py-1.5 rounded-lg border border-slate-200 bg-white text-sm font-bold" />
+                                <input name="amount_needed_{{ $d }}" type="number" min="0" step="1" value="{{ $val }}" class="w-full px-2 py-1.5 rounded-lg border border-slate-200 bg-white text-sm font-bold mb-1" />
+                                <label class="block text-[9px] font-black text-slate-400 mb-0.5">Price per PCS</label>
+                                <input name="price_{{ $d }}" type="number" min="0" step="0.01" value="{{ $priceVal }}" placeholder="0.00" class="w-full px-2 py-1.5 rounded-lg border border-slate-200 bg-white text-sm font-bold" />
                             </div>
                         @endforeach
                     </div>
@@ -242,7 +250,7 @@
         <!-- Content Grid -->
         <div class="space-y-4">
             <!-- Requirements Table (Full Width) -->
-            <div class="section-card">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
                 <div class="flex items-center justify-between p-5 pb-3">
                     <h3 class="text-base font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
                         <svg class="w-5 h-5 text-[#00adc5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
@@ -251,31 +259,17 @@
                     <span class="text-[10px] font-bold text-slate-400">{{ $requirements->total() }} items</span>
                 </div>
 
-                    <div class="overflow-x-auto shadow-lg hover:shadow-xl transition-all">
+                    <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                                <tr class="bg-[#00adc5] text-white">
-                                <th
-                                    class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100">
-                                    Tracking ID</th>
-                                <th
-                                    class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100">
-                                    Element / Ref</th>
-                                <th
-                                    class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100 text-center">
-                                    Diameter</th>
-                                <th
-                                    class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100 text-center">
-                                    Length (m)</th>
-                                <th
-                                    class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100 text-center">
-                                    Qty</th>
-                                <th
-                                    class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100 text-right">
-                                    Total (m)</th>
-                                <th
-                                    class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100 text-right">
-                                    Actions</th>
+                            <tr class="border-b border-white/10" style="background: linear-gradient(180deg, #00ADC5 0%, #000000 100%);">
+                                <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100">Tracking ID</th>
+                                <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100">Element / Ref</th>
+                                <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100 text-center">Diameter</th>
+                                <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100 text-center">Length (m)</th>
+                                <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100 text-center">Qty</th>
+                                <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100 text-right">Total (m)</th>
+                                <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest border-b border-slate-100 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">
@@ -323,20 +317,20 @@
                                         {{ number_format($req->total_length, 2) }}
                                     </td>
                                     <td class="px-4 py-2.5">
-                                        <div
-                                            class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                        <div class="flex items-center justify-end gap-2 flex-wrap">
                                             @if(auth()->user()->isAdmin() || auth()->user()->isSiteEngineer())
                                             <a href="{{ route('admin.rebar.cutting-logs.create', ['requirement_id' => $req->id]) }}"
-                                                class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
-                                                title="Record Cut">
+                                                class="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-full transition-all font-bold text-[10px] uppercase tracking-wider">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 0a3 3 0 10-4.243 4.243L3 21l1.121-3.121a3 3 0 014.243-4.243L12 12z"></path></svg>
+                                                Record Cut
                                             </a>
                                             @endif
                                             @if(auth()->user()->isAdmin() || (auth()->user()->isSiteEngineer() && $req->user_id === auth()->id()))
-                                            <a href="{{ route('admin.rebar.requirements.edit', $req) }}"
-                                                class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                            <a href="{{ route('admin.rebar.requirements.edit', $req) }}?return={{ urlencode(route('admin.rebar.sites.show', $site)) }}"
+                                                class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-full transition-all font-bold text-[10px] uppercase tracking-wider"
                                                 title="Edit">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                                Edit
                                             </a>
                                             <form action="{{ route('admin.rebar.requirements.destroy', $req) }}"
                                                 method="POST" onsubmit="return confirm('Archive this requirement?');"
@@ -344,9 +338,10 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-full transition-all font-bold text-[10px] uppercase tracking-wider"
                                                     title="Remove">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    Delete
                                                 </button>
                                             </form>
                                             @endif
@@ -364,14 +359,14 @@
                     </table>
                 </div>
                 @if($requirements->hasPages())
-                    <div class="px-4 py-3 border-t border-slate-50">
+                    <div class="px-4 py-3 border-t border-slate-50 bg-slate-50/30 rounded-b-2xl">
                         {{ $requirements->links() }}
                     </div>
                 @endif
             </div>
 
-                <!-- Off-cuts Inventory Section -->
-                <div class="section-card mt-4">
+            <!-- Off-cuts Inventory Section -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
                     <div class="flex items-center justify-between p-5 pb-3">
                         <div>
                             <h3 class="text-base font-black text-slate-900 tracking-tight">Available Off-cuts</h3>
@@ -384,26 +379,21 @@
                         </div>
                     </div>
 
-                <div class="overflow-x-auto shadow-lg hover:shadow-xl transition-all">
+                    <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                    <tr class="bg-[#00adc5] text-white">
-                                    <th
-                                        class="px-4 py-2 text-[9px] font-black text-white uppercase tracking-widest">
+                                <tr class="border-b border-white/10" style="background: linear-gradient(180deg, #00ADC5 0%, #000000 100%);">
+                                    <th class="px-4 py-2 text-[9px] font-black text-white uppercase tracking-widest">
                                         Code</th>
-                                    <th
-                                        class="px-4 py-2 text-[9px] font-black text-white uppercase tracking-widest text-center">
+                                    <th class="px-4 py-2 text-[9px] font-black text-white uppercase tracking-widest text-center">
                                         Specifications</th>
-                                    <th
-                                        class="px-4 py-2 text-[9px] font-black text-white uppercase tracking-widest text-center">
+                                    <th class="px-4 py-2 text-[9px] font-black text-white uppercase tracking-widest text-center">
                                         Status</th>
-                                    <th
-                                        class="px-4 py-2 text-[9px] font-black text-white uppercase tracking-widest">
+                                    <th class="px-4 py-2 text-[9px] font-black text-white uppercase tracking-widest">
                                         Location</th>
-                                    <th
-                                        class="px-4 py-2 text-[9px] font-black text-white uppercase tracking-widest text-right">
+                                    <th class="px-4 py-2 text-[9px] font-black text-white uppercase tracking-widest text-right">
                                         Actions</th>
-                                </tr>
+                                    </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-50">
                                 @forelse($offcuts as $offcut)
@@ -490,4 +480,5 @@
                 </div>
             </div>
         </div>
+    </div>
 </x-app-layout>

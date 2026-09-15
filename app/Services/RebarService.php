@@ -117,7 +117,7 @@ class RebarService
             ->get()
             ->keyBy('bar_diameter');
 
-        $diameters = ['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'];
+        $diameters = ['08', '10', '12', '14', '16', '20', '24', '32'];
         foreach ($diameters as $d) {
             $site->{'amount_needed_' . $d} = $totals[$d]->total_qty ?? 0;
         }

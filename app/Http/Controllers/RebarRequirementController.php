@@ -120,6 +120,11 @@ class RebarRequirementController extends Controller
         $requirement->total_length = ($requirement->required_length * $requirement->quantity);
         $requirement->save();
 
+        if ($request->has('return')) {
+            return redirect($request->input('return'))
+                ->with('success', 'Rebar requirement updated successfully.');
+        }
+
         return redirect()->route('admin.rebar.requirements.index')
             ->with('success', 'Rebar requirement updated successfully.');
     }

@@ -41,58 +41,46 @@
         </div>
 
         <!-- Filter Modern Bar -->
-        <div class="bg-white/90 backdrop-blur-sm rounded-[2rem] p-6 shadow-lg hover:shadow-xl transition-all border border-slate-200/60">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-lg p-5">
             <form method="GET" action="{{ route('admin.rebar.requirements.index') }}"
-                class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Search
-                        Keywords</label>
-                    <div class="relative">
-                        <i data-lucide="search"
-                            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300"></i>
-                        <input type="text" name="search" value="{{ request('search') }}"
-                            placeholder="ID, Location, Drawing..."
-                            class="w-full pl-11 pr-4 py-3 bg-slate-50 border-transparent rounded-xl font-bold text-sm text-slate-700 focus:ring-4 focus:ring-cyan-500/10 focus:bg-white transition-all">
-                    </div>
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Search Keywords</label>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="ID, Location, Drawing..."
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                 </div>
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Bar
-                        Diameter</label>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Bar Diameter</label>
                     <select name="diameter"
-                        class="w-full py-3 bg-slate-50 border-transparent rounded-xl font-bold text-sm text-slate-700 focus:ring-4 focus:ring-cyan-500/10 focus:bg-white transition-all">
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                         <option value="">All Sizes</option>
                         @foreach([10, 12, 14, 16, 18, 20, 24, 25, 32] as $d)
                             <option value="{{ $d }}" {{ request('diameter') == $d ? 'selected' : '' }}>Ø{{ $d }}mm</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Steel Grade</label>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Steel Grade</label>
                     <select name="steel_grade"
-                        class="w-full py-3 bg-slate-50 border-transparent rounded-xl font-bold text-sm text-slate-700 focus:ring-4 focus:ring-cyan-500/10 focus:bg-white transition-all">
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                         <option value="">All Grades</option>
                         @foreach([300, 400, 500, 600] as $grade)
                             <option value="{{ $grade }}" {{ request('steel_grade') == $grade ? 'selected' : '' }}>Grade {{ $grade }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="space-y-2">
-                    <label
-                        class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Structural
-                        element</label>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Structural Element</label>
                     <input type="text" name="element" value="{{ request('element') }}" placeholder="e.g. Columns, Beam"
-                        class="w-full py-3 bg-slate-50 border-transparent rounded-xl font-bold text-sm text-slate-700 focus:ring-4 focus:ring-cyan-500/10 focus:bg-white transition-all">
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                 </div>
-                <div class="hidden lg:block"></div>
                 <div class="flex items-end gap-2">
                     <button type="submit"
-                        class="flex-1 py-3 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
-                        Apply Filter
-                    </button>
+                        class="flex-1 py-2.5 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all">Apply Filter</button>
                     <a href="{{ route('admin.rebar.requirements.index') }}"
-                        class="p-3 bg-slate-100 text-slate-400 rounded-xl hover:bg-slate-200 transition-all"
+                        class="p-2.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all"
                         title="Reset">
-                        <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
                     </a>
                 </div>
             </form>
@@ -100,24 +88,24 @@
 
         <!-- Interactive Table -->
         <div
-            class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-200/60 overflow-hidden relative">
-                <div class="overflow-x-auto overflow-y-visible shadow-lg hover:shadow-xl transition-all">
+            class="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden relative">
+                <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-[#00adc5] text-white">
+                        <tr class="border-b border-white/10" style="background: linear-gradient(180deg, #00ADC5 0%, #000000 100%);">
                             <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">#</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                            <th class="px-8 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
                                 Requirement Reference</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                            <th class="px-8 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
                                 Structural Element</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                            <th class="px-8 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
                                 Technical Specs</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                            <th class="px-8 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
                                 Quantity</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                            <th class="px-8 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">
                                 Drawing Info</th>
                             <th
-                                class="px-8 py-5 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right">
+                                class="px-8 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right">
                                 Actions</th>
                         </tr>
                     </thead>
@@ -236,7 +224,7 @@
             </div>
 
             @if($requirements->hasPages())
-                <div class="px-8 py-6 border-t border-slate-50 bg-slate-50/30">
+                <div class="px-4 py-3 border-t border-slate-50 bg-slate-50/30 rounded-b-2xl">
                     {{ $requirements->links() }}
                 </div>
             @endif

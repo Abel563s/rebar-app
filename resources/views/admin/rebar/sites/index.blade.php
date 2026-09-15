@@ -30,86 +30,88 @@
             @endif
         </div>
 
-        <!-- Sites Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            @forelse($sites as $site)
-                <div
-                    class="section-card overflow-hidden group hover:shadow-md transition-all duration-200">
-                    <div class="p-5 space-y-4">
-                        <!-- Site Info -->
-                        <div class="flex items-start justify-between">
-                            <div class="space-y-1">
-                                <span
-                                    class="text-[10px] font-black text-cyan-500 uppercase tracking-[0.2em]">{{ $site->site_code }}</span>
-                                <h3
-                                    class="text-lg font-black text-slate-900 leading-tight group-hover:text-cyan-600 transition-colors">
-                                    {{ $site->site_name }}
-                                </h3>
-                                <p class="text-sm font-bold text-slate-400">{{ $site->project_name }}</p>
-                            </div>
-                            <div class="flex flex-col items-end gap-2">
-                                <span
-                                    class="px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full {{ $site->status === 'Active' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500' }}">
-                                    {{ $site->status }}
-                                </span>
-                                @if(auth()->user()->isAdmin() || (auth()->user()->isSiteEngineer() && $site->user_id === auth()->id()))
-                                <a href="{{ route('admin.rebar.sites.edit', $site) }}" 
-                                   class="p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-xl transition-all"
-                                   title="Edit Site">
-                                    <i data-lucide="settings" class="w-4 h-4"></i>
-                                </a>
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- Details -->
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3 text-slate-500">
-                                <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center">
-                                    <i data-lucide="map-pin" class="w-4 h-4"></i>
-                                </div>
-                                <span class="text-sm font-medium">{{ $site->location }}</span>
-                            </div>
-                            @if($site->sector)
-                                <div class="flex items-center gap-3 text-slate-500">
-                                    <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center">
-                                        <i data-lucide="building-2" class="w-4 h-4"></i>
+        <!-- Sites Table -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-white/10" style="background: linear-gradient(180deg, #00ADC5 0%, #000000 100%);">
+                            <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest text-center">#</th>
+                            <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest">Site Code</th>
+                            <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest">Site Name</th>
+                            <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest">Project</th>
+                            <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest">Location</th>
+                            <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest">Sector</th>
+                            <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest text-center">Grade</th>
+                            <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest text-center">Status</th>
+                            <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        @forelse($sites as $site)
+                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                                <td class="px-4 py-3 text-center text-[10px] font-black text-slate-400">{{ ($sites->currentPage() - 1) * $sites->perPage() + $loop->iteration }}</td>
+                                <td class="px-4 py-3">
+                                    <span class="text-xs font-black text-cyan-600">{{ $site->site_code }}</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="font-black text-slate-900 text-sm">{{ $site->site_name }}</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="text-xs font-medium text-slate-600">{{ $site->project_name }}</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-1.5 text-slate-500">
+                                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                        <span class="text-xs font-medium">{{ $site->location }}</span>
                                     </div>
-                                    <span class="text-sm font-medium">{{ $site->sector }}</span>
-                                </div>
-                            @endif
-                        </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="text-xs font-medium text-slate-600">{{ $site->sector ?? '-' }}</span>
+                                </td>
+                                <td class="px-4 py-3 text-center">
+                                    <span class="px-2.5 py-1 bg-slate-100 rounded-lg font-black text-[11px] text-slate-600">
+                                        Grade {{ $site->steel_grade }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-center">
+                                    <span class="px-2.5 py-1 rounded-full font-black text-[10px] uppercase tracking-wider {{ $site->status === 'Active' ? 'bg-emerald-50 text-emerald-600' : ($site->status === 'Terminated' ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-500') }}">
+                                        {{ $site->status }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-right">
+                                    <div class="flex items-center justify-end gap-2 flex-wrap">
+                                        <a href="{{ route('admin.rebar.sites.show', $site) }}"
+                                            class="inline-flex items-center gap-1 px-3 py-1.5 bg-cyan-50 text-cyan-600 rounded-full transition-all font-bold text-[10px] uppercase tracking-wider hover:bg-cyan-100">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                                            Manage
+                                        </a>
+                                        @if(auth()->user()->isAdmin() || (auth()->user()->isSiteEngineer() && $site->user_id === auth()->id()))
+                                        <a href="{{ route('admin.rebar.sites.edit', $site) }}"
+                                            class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                            title="Edit Site">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                        </a>
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="px-4 py-8 text-center text-slate-400 font-medium text-sm">
+                                    No project sites found. Create your first site to get started.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-                        <!-- CTA -->
-                        <div class="pt-4 border-t border-slate-50">
-                            <a href="{{ route('admin.rebar.sites.show', $site) }}"
-                                class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-cyan-600 transition-all group/btn shadow-sm">
-                                Manage Rebar
-                                <i data-lucide="arrow-right"
-                                    class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                    </div>
+            @if($sites->hasPages())
+                <div class="px-4 py-3 border-t border-slate-50 bg-slate-50/30 rounded-b-2xl">
+                    {{ $sites->links() }}
                 </div>
-            @empty
-                <div class="col-span-full section-card border-2 border-dashed border-slate-200 p-10 text-center">
-                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i data-lucide="building-2" class="w-8 h-8 text-slate-300"></i>
-                    </div>
-                    <h3 class="text-lg font-black text-slate-900 mb-2">No Project Sites Found</h3>
-                    <p class="text-slate-400 font-medium mb-6 text-sm">Start by creating your first construction site to manage
-                        rebar requirements.</p>
-                    <a href="{{ route('admin.rebar.sites.create') }}"
-                        class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-all">
-                        Create First Site
-                    </a>
-                </div>
-            @endforelse
-        </div>
-
-        <!-- Pagination -->
-        <div class="mt-4">
-            {{ $sites->links() }}
+            @endif
         </div>
     </div>
 </x-app-layout>

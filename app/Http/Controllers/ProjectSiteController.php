@@ -42,7 +42,7 @@ class ProjectSiteController extends Controller
             ->keyBy('bar_diameter');
 
         $totalPcsNeeded = 0;
-        foreach (['08', '10', '12', '14', '16', '18', '20', '24', '28', '32'] as $d) {
+        foreach (['08', '10', '12', '14', '16', '20', '24', '32'] as $d) {
             $totalPcsNeeded += (int)($site->{'amount_needed_'.$d} ?? 0);
         }
         $totalKgCut = $usageByDiameter->sum('total_weight');
@@ -71,7 +71,7 @@ class ProjectSiteController extends Controller
             'site_name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'sector' => 'nullable|string|max:255',
-            'status' => 'required|in:Active,Completed',
+            'status' => 'required|in:Active,Completed,Terminated',
             'steel_grade' => 'required|string|in:300,400,500,600',
             'notes' => 'nullable|string',
             'manager_id' => 'nullable|exists:users,id',
@@ -80,11 +80,17 @@ class ProjectSiteController extends Controller
             'amount_needed_12' => 'nullable|numeric|min:0',
             'amount_needed_14' => 'nullable|numeric|min:0',
             'amount_needed_16' => 'nullable|numeric|min:0',
-            'amount_needed_18' => 'nullable|numeric|min:0',
             'amount_needed_20' => 'nullable|numeric|min:0',
             'amount_needed_24' => 'nullable|numeric|min:0',
-            'amount_needed_28' => 'nullable|numeric|min:0',
             'amount_needed_32' => 'nullable|numeric|min:0',
+            'price_08' => 'nullable|numeric|min:0',
+            'price_10' => 'nullable|numeric|min:0',
+            'price_12' => 'nullable|numeric|min:0',
+            'price_14' => 'nullable|numeric|min:0',
+            'price_16' => 'nullable|numeric|min:0',
+            'price_20' => 'nullable|numeric|min:0',
+            'price_24' => 'nullable|numeric|min:0',
+            'price_32' => 'nullable|numeric|min:0',
         ]);
 
         $validated['user_id'] = auth()->id();
@@ -121,7 +127,7 @@ class ProjectSiteController extends Controller
             'site_name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'sector' => 'nullable|string|max:255',
-            'status' => 'required|in:Active,Completed',
+            'status' => 'required|in:Active,Completed,Terminated',
             'steel_grade' => 'required|string|in:300,400,500,600',
             'notes' => 'nullable|string',
             'manager_id' => 'nullable|exists:users,id',
@@ -130,11 +136,17 @@ class ProjectSiteController extends Controller
             'amount_needed_12' => 'nullable|numeric|min:0',
             'amount_needed_14' => 'nullable|numeric|min:0',
             'amount_needed_16' => 'nullable|numeric|min:0',
-            'amount_needed_18' => 'nullable|numeric|min:0',
             'amount_needed_20' => 'nullable|numeric|min:0',
             'amount_needed_24' => 'nullable|numeric|min:0',
-            'amount_needed_28' => 'nullable|numeric|min:0',
             'amount_needed_32' => 'nullable|numeric|min:0',
+            'price_08' => 'nullable|numeric|min:0',
+            'price_10' => 'nullable|numeric|min:0',
+            'price_12' => 'nullable|numeric|min:0',
+            'price_14' => 'nullable|numeric|min:0',
+            'price_16' => 'nullable|numeric|min:0',
+            'price_20' => 'nullable|numeric|min:0',
+            'price_24' => 'nullable|numeric|min:0',
+            'price_32' => 'nullable|numeric|min:0',
         ]);
 
         $site->update($validated);

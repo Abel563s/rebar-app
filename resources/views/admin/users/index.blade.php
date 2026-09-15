@@ -13,56 +13,54 @@
             </button>
         </div>
 
-<div class="section-card shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm border border-slate-200/60 p-3 flex flex-col lg:flex-row lg:items-center gap-3">
-                <form action="{{ route('admin.users.index') }}" method="GET" class="flex flex-col lg:flex-row lg:items-center gap-3 w-full">
-                    <div class="relative flex-1">
-                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name or email..."
-                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 placeholder-slate-400 focus:border-[#00ADC5] focus:ring-2 focus:ring-[#00ADC5]/10 transition-all outline-none">
-                    </div>
-
-                    <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl border border-slate-100">
-                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-slate-400"></i>
-                        <select name="role" onchange="this.form.submit()"
-                            class="bg-transparent border-none text-[10px] font-black text-slate-600 uppercase tracking-widest focus:ring-0 cursor-pointer py-0.5">
-                            <option value="">All Tiers</option>
-                            <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Root (Admin)</option>
-                            <option value="manager" {{ request('role') == 'manager' ? 'selected' : '' }}>Lead (Manager)</option>
-                            <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>Standard (User)</option>
-                            <option value="department_attendance_user" {{ request('role') == 'department_attendance_user' ? 'selected' : '' }}>Department Attendance User</option>
-                            <option value="site_engineer" {{ request('role') == 'site_engineer' ? 'selected' : '' }}>Site Engineer</option>
-                            <option value="approval_officer" {{ request('role') == 'approval_officer' ? 'selected' : '' }}>Approval Officer</option>
-                            <option value="cost_control" {{ request('role') == 'cost_control' ? 'selected' : '' }}>Cost Control</option>
-                            <option value="quantity_surveyor" {{ request('role') == 'quantity_surveyor' ? 'selected' : '' }}>Quantity Surveyor</option>
-                            <option value="store_keeper" {{ request('role') == 'store_keeper' ? 'selected' : '' }}>Store Keeper</option>
-                        </select>
-                    </div>
-
-                    <div class="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl border border-slate-100">
-                        <i data-lucide="activity" class="w-3.5 h-3.5 text-slate-400"></i>
-                        <select name="status" onchange="this.form.submit()"
-                            class="bg-transparent border-none text-[10px] font-black text-slate-600 uppercase tracking-widest focus:ring-0 cursor-pointer py-0.5">
-                            <option value="">All States</option>
-                            <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Operational</option>
-                            <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Offline</option>
-                        </select>
-                    </div>
-
-                    @if(request()->anyFilled(['search', 'role', 'status']))
-                        <a href="{{ route('admin.users.index') }}" 
-                           class="flex items-center justify-center p-2.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all" title="Clear All Filters">
-                            <i data-lucide="filter-x" class="w-4 h-4"></i>
-                        </a>
-                    @endif
-                </form>
-            </div>
+<div class="bg-white rounded-2xl border border-slate-200 shadow-lg p-5">
+    <form action="{{ route('admin.users.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
+        <div>
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Search</label>
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name or email..."
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
+        </div>
+        <div>
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Role</label>
+            <select name="role" onchange="this.form.submit()"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
+                <option value="">All Tiers</option>
+                <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Root (Admin)</option>
+                <option value="manager" {{ request('role') == 'manager' ? 'selected' : '' }}>Lead (Manager)</option>
+                <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>Standard (User)</option>
+                <option value="department_attendance_user" {{ request('role') == 'department_attendance_user' ? 'selected' : '' }}>Department Attendance User</option>
+                <option value="site_engineer" {{ request('role') == 'site_engineer' ? 'selected' : '' }}>Site Engineer</option>
+                <option value="sr_site_engineer" {{ request('role') == 'sr_site_engineer' ? 'selected' : '' }}>Sr Site Engineer</option>
+                <option value="approval_officer" {{ request('role') == 'approval_officer' ? 'selected' : '' }}>Approval Officer</option>
+                <option value="cost_control" {{ request('role') == 'cost_control' ? 'selected' : '' }}>Cost Control</option>
+                <option value="quantity_surveyor" {{ request('role') == 'quantity_surveyor' ? 'selected' : '' }}>Quantity Surveyor</option>
+                <option value="store_keeper" {{ request('role') == 'store_keeper' ? 'selected' : '' }}>Store Keeper</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Status</label>
+            <select name="status" onchange="this.form.submit()"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
+                <option value="">All States</option>
+                <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Operational</option>
+                <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Offline</option>
+            </select>
+        </div>
+        <div class="flex items-end gap-2">
+            <button type="submit" class="flex-1 py-2.5 px-4 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all">Filter</button>
+            <a href="{{ route('admin.users.index') }}" class="p-2.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all" title="Reset">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+            </a>
+        </div>
+    </form>
+</div>
         </div>
 
-            <div class="section-card">
-                <div class="overflow-x-auto shadow-lg hover:shadow-xl transition-all">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-[#00adc5] text-white">
+                            <tr class="border-b border-white/10" style="background: linear-gradient(180deg, #00ADC5 0%, #000000 100%);">
                                 <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">#</th>
                                 <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em]">User</th>
                                 <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.15em] text-center">Role</th>
@@ -152,7 +150,7 @@
                 </table>
             </div>
             @if($users->hasPages())
-                <div class="px-4 py-3 border-t border-slate-50">
+                <div class="px-4 py-3 border-t border-slate-50 bg-slate-50/30 rounded-b-2xl">
                     {{ $users->links() }}
                 </div>
             @endif
@@ -203,6 +201,7 @@
                                 <option value="user">User</option>
                                 <option value="manager">Manager</option>
                                 <option value="site_engineer">Site Engineer</option>
+                                <option value="sr_site_engineer">Sr Site Engineer</option>
                                 <option value="approval_officer">Approval Officer</option>
                                 <option value="cost_control">Cost Control</option>
                                 <option value="quantity_surveyor">Quantity Surveyor</option>

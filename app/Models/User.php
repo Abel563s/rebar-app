@@ -83,6 +83,11 @@ class User extends Authenticatable
         return $this->role === 'site_engineer';
     }
 
+    public function isSrSiteEngineer(): bool
+    {
+        return $this->role === 'sr_site_engineer';
+    }
+
     public function isApprovalOfficer(): bool
     {
         return $this->role === 'approval_officer';
@@ -114,6 +119,7 @@ class User extends Authenticatable
             'admin',
             'manager',
             'site_engineer',
+            'sr_site_engineer',
             'approval_officer',
             'cost_control',
             'quantity_surveyor',

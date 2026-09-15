@@ -17,21 +17,24 @@ class RebarReportController extends Controller
         if (!$user->isAdmin() && !$user->isApprovalOfficer() && !$user->isCostControl() && !$user->isQuantitySurveyor() && !$user->isStoreKeeper() && !$user->isManager()) {
             abort(403);
         }
-        // 1. Site-wise Detailed Statistics
+
+        $diameterPriceMap = [
+            8 => 'price_08', 10 => 'price_10', 12 => 'price_12',
+            14 => 'price_14', 16 => 'price_16', 18 => 'price_18',
+            20 => 'price_20', 24 => 'price_24', 32 => 'price_32',
+        ];
+
         $siteStats = ProjectSite::withCount(['requirements', 'cuttingLogs', 'offcuts'])
             ->get()
-            ->map(function ($site) {
-                // Total length and weight of rebar requested
+            ->map(function ($site) use ($diameterPriceMap) {
                 $totalRequestedLength = RebarRequirement::where('site_id', $site->id)->sum('total_length') ?: 0;
                 $totalRequestedWeight = RebarRequirement::where('site_id', $site->id)->get()->sum('total_weight') ?: 0;
 
-                // Total length and weight fabricated
                 $totalFabricatedLength = RebarCuttingLog::where('site_id', $site->id)
                     ->selectRaw('SUM(cut_length * quantity_cut) as total')
                     ->value('total') ?: 0;
                 $totalFabricatedWeight = RebarCuttingLog::where('site_id', $site->id)->sum('weight_kg') ?: 0;
 
-                // Wastage (Scrap status)
                 $scrapLength = Offcut::where('site_id', $site->id)
                     ->where('status', 'Scrap')
                     ->selectRaw('SUM(length * quantity) as total')
@@ -41,7 +44,6 @@ class RebarReportController extends Controller
                     ->get()
                     ->sum('weight_kg') ?: 0;
 
-                // Reused (Used status)
                 $reusedLength = Offcut::where('site_id', $site->id)
                     ->where('status', 'Used')
                     ->selectRaw('SUM(length * quantity) as total')
@@ -51,7 +53,6 @@ class RebarReportController extends Controller
                     ->get()
                     ->sum('weight_kg') ?: 0;
 
-                // Available Offcuts
                 $availableLength = Offcut::where('site_id', $site->id)
                     ->where('status', 'Available')
                     ->selectRaw('SUM(length * quantity) as total')
@@ -82,6 +83,7 @@ class RebarReportController extends Controller
                     'available_weight' => $availableWeight,
                     'available_count' => $availableCount,
                     'progress' => $totalRequestedLength > 0 ? round(($totalFabricatedLength / $totalRequestedLength) * 100, 1) : 0,
+                    'estimated_cost' => $this->calculateSiteEstimatedCost($site, $diameterPriceMap),
                 ];
             });
 
@@ -177,6 +179,7 @@ class RebarReportController extends Controller
             'total_avail_length' => $siteStats->sum('available_length'),
             'total_avail_weight' => $siteStats->sum('available_weight'),
             'total_avail_count' => $siteStats->sum('available_count'),
+            'total_estimated_cost' => $siteStats->sum('estimated_cost'),
         ];
         
         // Recycled/Re-use rate: percentage of cutting logs that used offcuts
@@ -196,5 +199,20 @@ class RebarReportController extends Controller
             ->get();
 
         return view('admin.rebar.reports', compact('siteStats', 'monthlyTrend', 'diameterStats', 'gradeStats', 'global', 'recentLogs'));
+    }
+
+    private function calculateSiteEstimatedCost(ProjectSite $site, array $diameterPriceMap): float
+    {
+        $requirements = RebarRequirement::where('site_id', $site->id)->get();
+        $totalCost = 0.0;
+
+        foreach ($requirements as $req) {
+            $priceColumn = $diameterPriceMap[$req->bar_diameter] ?? null;
+            if ($priceColumn && $site->$priceColumn !== null) {
+                $totalCost += (float) $site->$priceColumn * $req->quantity;
+            }
+        }
+
+        return round($totalCost, 2);
     }
 }

@@ -20,6 +20,13 @@
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18v-8a2 2 0 00-2-2H5a2 2 0 00-2 2v8z M9 9V3a2 2 0 012-2h2a2 2 0 012 2v6 M9 21V9"/></svg>
                     View by Site
                 </a>
+                @if(auth()->user()->isAdmin() || auth()->user()->isSiteEngineer())
+                <a href="{{ route('admin.rebar.offcuts.import-form') }}"
+                    class="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg font-bold text-[10px] uppercase tracking-widest hover:scale-[1.02] transition-all">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Import
+                </a>
+                @endif
             </div>
         </div>
 
@@ -40,20 +47,20 @@
         </div>
 
         <!-- Filter Bar -->
-        <div class="section-card shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm border border-slate-200/60">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-lg p-5">
             <form method="GET" action="{{ route('admin.rebar.offcuts.index') }}"
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div>
                     <label
-                        class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Search</label>
+                        class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Search</label>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search code..."
-                        class="w-full bg-slate-50 border-slate-200 rounded-lg py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-sm">
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                 </div>
                 <div>
-                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Project
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Project
                         Site</label>
                     <select name="site_id"
-                        class="w-full bg-slate-50 border-slate-200 rounded-lg py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-sm">
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                         <option value="">All Sites</option>
                         @foreach($sites as $site)
                             <option value="{{ $site->id }}" {{ request('site_id') == $site->id ? 'selected' : '' }}>
@@ -64,9 +71,9 @@
                 </div>
                 <div>
                     <label
-                        class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Status</label>
+                        class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Status</label>
                     <select name="status"
-                        class="w-full bg-slate-50 border-slate-200 rounded-lg py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-sm">
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                         <option value="">All Statuses</option>
                         <option value="Available" {{ request('status') == 'Available' ? 'selected' : '' }}>Available
                         </option>
@@ -76,31 +83,32 @@
                 </div>
                 <div>
                     <label
-                        class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Diameter</label>
+                        class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Diameter</label>
                     <select name="diameter"
-                        class="w-full bg-slate-50 border-slate-200 rounded-lg py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-sm">
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                         <option value="">All Sizes</option>
                         @foreach([10, 12, 16, 20, 25, 32] as $d)
                             <option value="{{ $d }}" {{ request('diameter') == $d ? 'selected' : '' }}>{{ $d }}mm</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="flex items-end gap-3">
+                <div class="flex items-end gap-2">
                     <button type="submit"
-                        class="flex-1 py-2 bg-slate-900 text-white rounded-lg font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all">Filter</button>
+                        class="flex-1 py-2.5 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all">Filter</button>
                     <a href="{{ route('admin.rebar.offcuts.index') }}"
-                        class="p-2 bg-slate-100 text-slate-500 rounded-lg hover:bg-slate-200 transition-all">
+                        class="p-2.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all"
+                        title="Reset">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-6.219-8.707"/></svg>
                     </a>
                 </div>
             </form>
         </div>
 
-        <div class="section-card">
-            <div class="overflow-x-auto shadow-lg hover:shadow-xl transition-all">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-[#00adc5] text-white">
+                        <tr class="border-b border-white/10" style="background: linear-gradient(180deg, #00ADC5 0%, #000000 100%);">
                             <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest">
                                 Off-Cut Code</th>
                             <th class="px-4 py-2.5 text-[9px] font-black text-white uppercase tracking-widest">
@@ -201,17 +209,16 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-3 text-right">
-                                    <div
-                                        class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                                    <div class="flex items-center justify-end gap-2 flex-wrap">
                                         @if($offcut->status === 'Available')
                                             <form action="{{ route('admin.rebar.offcuts.update-status', $offcut) }}"
                                                 method="POST">
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="Used">
                                                 <button type="submit"
-                                                    class="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-all"
-                                                    title="Mark as Used">
+                                                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-full transition-all font-bold text-[10px] uppercase tracking-wider">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 11.08V12a10 10 0 11-5.93-9.14 M22 4L12 14.01l-3-3"/></svg>
+                                                    Used
                                                 </button>
                                             </form>
                                             <form action="{{ route('admin.rebar.offcuts.update-status', $offcut) }}"
@@ -219,9 +226,9 @@
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="Scrap">
                                                 <button type="submit"
-                                                    class="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-md transition-all"
-                                                    title="Mark as Wastage">
+                                                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-full transition-all font-bold text-[10px] uppercase tracking-wider">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18 M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6 M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2 M10 11v6 M14 11v6"/></svg>
+                                                    Scrap
                                                 </button>
                                             </form>
                                         @else
@@ -230,22 +237,20 @@
                                                 @csrf @method('PATCH')
                                                 <input type="hidden" name="status" value="Available">
                                                 <button type="submit"
-                                                    class="p-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-md transition-all"
-                                                    title="Restore to Available">
+                                                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-full transition-all font-bold text-[10px] uppercase tracking-wider">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-6.219-8.707"/></svg>
+                                                    Available
                                                 </button>
                                             </form>
                                         @endif
 
                                         @if($offcut->site_id)
                                             <a href="{{ route('admin.rebar.sites.show', $offcut->site_id) }}"
-                                                class="flex items-center gap-1.5 px-3 py-1.5 text-cyan-600 bg-cyan-50 hover:bg-cyan-100 rounded-lg transition-all font-bold text-[10px]"
+                                                class="inline-flex items-center gap-1 px-3 py-1.5 text-cyan-600 bg-cyan-50 hover:bg-cyan-100 rounded-full transition-all font-bold text-[10px] uppercase tracking-wider"
                                                 title="View Site Hub">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6 M15 3h6v6 M10 14L21 3"/></svg>
                                                 Site Hub
                                             </a>
-                                        @else
-                                            <span class="text-[10px] font-black text-slate-300 uppercase">No Site</span>
                                         @endif
                                     </div>
                                 </td>
@@ -270,7 +275,7 @@
             </div>
 
             @if($offcuts->hasPages())
-                <div class="px-4 py-3 border-t border-slate-50 bg-slate-50/30">
+                <div class="px-4 py-3 border-t border-slate-50 bg-slate-50/30 rounded-b-2xl">
                     {{ $offcuts->links() }}
                 </div>
             @endif

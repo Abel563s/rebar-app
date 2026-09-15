@@ -32,15 +32,15 @@
         </div>
 
         <!-- Filter Bar -->
-        <div class="section-card shadow-lg hover:shadow-xl transition-all bg-white/90 backdrop-blur-sm border border-slate-200/60">
-            <form method="GET" action="{{ route('admin.rebar.cutting-logs.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-3">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-lg p-5">
+            <form method="GET" action="{{ route('admin.rebar.cutting-logs.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
                 <div>
-                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1.5">Search</label>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="ID or Element..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Search</label>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="ID or Element..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                 </div>
                 <div>
-                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1.5">Project Site</label>
-                    <select name="site_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Project Site</label>
+                    <select name="site_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                         <option value="">All Sites</option>
                         @foreach($sites as $site)
                             <option value="{{ $site->id }}" {{ request('site_id') == $site->id ? 'selected' : '' }}>{{ $site->site_name }}</option>
@@ -48,8 +48,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1.5">Bar Diameter</label>
-                    <select name="diameter" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Bar Diameter</label>
+                    <select name="diameter" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                         <option value="">All Sizes</option>
                         @foreach([8, 10, 12, 14, 16, 18, 20, 24, 32] as $d)
                             <option value="{{ $d }}" {{ request('diameter') == $d ? 'selected' : '' }}>{{ $d }}mm</option>
@@ -57,8 +57,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1.5">Steel Grade</label>
-                    <select name="steel_grade" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Steel Grade</label>
+                    <select name="steel_grade" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                         <option value="">All Grades</option>
                         @foreach([300, 400, 500, 600] as $grade)
                             <option value="{{ $grade }}" {{ request('steel_grade') == $grade ? 'selected' : '' }}>Grade {{ $grade }}</option>
@@ -67,21 +67,21 @@
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1.5">Min Len</label>
-                        <input type="number" step="0.01" name="min_length" value="{{ request('min_length') }}" placeholder="0.0" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
+                        <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Min Len</label>
+                        <input type="number" step="0.01" name="min_length" value="{{ request('min_length') }}" placeholder="0.0" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                     </div>
                     <div>
-                        <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1.5">Max Len</label>
-                        <input type="number" step="0.01" name="max_length" value="{{ request('max_length') }}" placeholder="12.0" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
+                        <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Max Len</label>
+                        <input type="number" step="0.01" name="max_length" value="{{ request('max_length') }}" placeholder="12.0" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1.5">Date</label>
-                    <input type="date" name="date" value="{{ request('date') }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Date</label>
+                    <input type="date" name="date" value="{{ request('date') }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-bold text-slate-600 text-xs">
                 </div>
                 <div class="flex items-end gap-2">
-                    <button type="submit" class="flex-1 py-2 px-4 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all">Filter</button>
-                    <a href="{{ route('admin.rebar.cutting-logs.index') }}" class="p-2 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all" title="Reset">
+                    <button type="submit" class="flex-1 py-2.5 px-4 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all">Filter</button>
+                    <a href="{{ route('admin.rebar.cutting-logs.index') }}" class="p-2.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all" title="Reset">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
                     </a>
                 </div>
@@ -89,11 +89,11 @@
         </div>
 
         <!-- Table Container -->
-        <div class="section-card shadow-lg hover:shadow-xl transition-all">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
             <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-[#00adc5]/20 bg-[#00adc5]">
+                            <tr class="border-b border-white/10" style="background: linear-gradient(180deg, #00ADC5 0%, #000000 100%);">
                                 <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em] text-center">#</th>
                                 <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Log Info</th>
                                 <th class="px-4 py-2.5 text-[10px] font-black text-white uppercase tracking-[0.2em]">Project Site</th>
@@ -235,7 +235,7 @@
                 </table>
             </div>
             @if($logs->hasPages())
-                <div class="px-4 py-3 border-t border-slate-50 bg-slate-50/30">
+                <div class="px-4 py-3 border-t border-slate-50 bg-slate-50/30 rounded-b-2xl">
                     {{ $logs->links() }}
                 </div>
             @endif
